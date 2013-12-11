@@ -17,21 +17,25 @@
         zoom = DEFAULT_ZOOM;
       }
       def = new jQuery.Deferred();
-      this.map = new google.maps.Map(this.node, {
-        center: position,
-        zoom: zoom,
-        scaleControl: false,
-        scrollwheel: false,
-        panControl: false,
-        mapTypeControl: false,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      });
-      if (this.map == null) {
-        def.rejectWith(this);
+      if (this.map != null) {
+        def.resolveWith(this);
       } else {
-        this.map.addListener('idle', function() {
-          return def.resolveWith(_this);
+        this.map = new google.maps.Map(this.node, {
+          center: position,
+          zoom: zoom,
+          scaleControl: false,
+          scrollwheel: false,
+          panControl: false,
+          mapTypeControl: false,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
         });
+        if (this.map == null) {
+          def.rejectWith(this);
+        } else {
+          this.map.addListener('idle', function() {
+            return def.resolveWith(_this);
+          });
+        }
       }
       return def.promise();
     };

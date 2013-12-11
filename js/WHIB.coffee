@@ -5,19 +5,21 @@ class window.WHIB
     @node = jQuery(node).get 0
   render: (position, zoom = DEFAULT_ZOOM) ->
     def = new jQuery.Deferred()
-    @map = new google.maps.Map @node,
-      center: position
-      zoom: zoom
-      scaleControl: no
-      scrollwheel: no
-      panControl: no
-      mapTypeControl: no
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    if not @map?
-      def.rejectWith @
+    if @map?
+      def.resolveWith @
     else
-      @map.addListener 'idle', =>
-        def.resolveWith @
+      @map = new google.maps.Map @node,
+        center: position
+        zoom: zoom
+        scaleControl: no
+        scrollwheel: no
+        panControl: no
+        mapTypeControl: no
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      if not @map? then def.rejectWith @
+      else
+        @map.addListener 'idle', =>
+          def.resolveWith @
     def.promise()
 
 class WHIB.Place extends Backbone.Model
