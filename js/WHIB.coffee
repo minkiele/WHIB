@@ -38,3 +38,4 @@ class WHIB.Place extends Backbone.Model
 
 class WHIB.Places extends Backbone.Collection
   model: WHIB.Place
+  localStorage: new Backbone.LocalStorage 'WHIB'

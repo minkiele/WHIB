@@ -88,6 +88,8 @@
 
     Places.prototype.model = WHIB.Place;
 
+    Places.prototype.localStorage = new Backbone.LocalStorage('WHIB');
+
     return Places;
 
   })(Backbone.Collection);
