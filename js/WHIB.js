@@ -48,8 +48,8 @@
         return _this.map.addListener('click', function(evt) {
           var place;
           place = new WHIB.Place({
-            lat: evt.latlng.lat(),
-            lng: evt.latlng.lng()
+            lat: evt.latLng.lat(),
+            lng: evt.latLng.lng()
           });
           this.places.add(place);
           return void 0;
