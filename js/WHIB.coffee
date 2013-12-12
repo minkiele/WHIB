@@ -26,8 +26,8 @@ class window.WHIB
     def.done =>
       @map.addListener 'click', (evt) ->
         place = new WHIB.Place
-          lat: evt.latlng.lat()
-          lng: evt.latlng.lng()
+          lat: evt.latLng.lat()
+          lng: evt.latLng.lng()
         @places.add place
         undefined
     def.promise()
