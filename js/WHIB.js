@@ -1,18 +1,25 @@
 (function() {
-  var DEFAULT_ZOOM, _ref, _ref1,
+  var DEFAULT_POSITION, DEFAULT_ZOOM, _ref, _ref1,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  DEFAULT_ZOOM = 15;
+  DEFAULT_ZOOM = 1;
+
+  DEFAULT_POSITION = new google.maps.LatLng(0, 0);
 
   window.WHIB = (function() {
     function WHIB(node) {
       this.node = jQuery(node).get(0);
+      this.places = new WHIB.Places();
+      this.places.fetch();
     }
 
-    WHIB.prototype.render = function(position, zoom) {
+    WHIB.prototype.createMapObject = function(position, zoom) {
       var def,
         _this = this;
+      if (position == null) {
+        position = DEFAULT_POSITION;
+      }
       if (zoom == null) {
         zoom = DEFAULT_ZOOM;
       }
@@ -37,6 +44,17 @@
           });
         }
       }
+      def.done(function() {
+        return _this.map.addListener('click', function(evt) {
+          var place;
+          place = new WHIB.Place({
+            lat: evt.latlng.lat(),
+            lng: evt.latlng.lng()
+          });
+          this.places.add(place);
+          return void 0;
+        });
+      });
       return def.promise();
     };
 

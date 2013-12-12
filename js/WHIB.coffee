@@ -1,9 +1,12 @@
-DEFAULT_ZOOM = 15
+DEFAULT_ZOOM = 1
+DEFAULT_POSITION = new google.maps.LatLng(0, 0)
 
 class window.WHIB
   constructor: (node) ->
     @node = jQuery(node).get 0
-  render: (position, zoom = DEFAULT_ZOOM) ->
+    @places = new WHIB.Places()
+    @places.fetch()
+  createMapObject: (position = DEFAULT_POSITION, zoom = DEFAULT_ZOOM) ->
     def = new jQuery.Deferred()
     if @map?
       def.resolveWith @
@@ -20,6 +23,13 @@ class window.WHIB
       else
         @map.addListener 'idle', =>
           def.resolveWith @
+    def.done =>
+      @map.addListener 'click', (evt) ->
+        place = new WHIB.Place
+          lat: evt.latlng.lat()
+          lng: evt.latlng.lng()
+        @places.add place
+        undefined
     def.promise()
 
 class WHIB.Place extends Backbone.Model
