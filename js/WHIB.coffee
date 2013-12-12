@@ -6,7 +6,9 @@ class window.WHIB
     @node = jQuery(node).get 0
     @places = new WHIB.Places()
     @places.fetch()
-  createMapObject: (position = DEFAULT_POSITION, zoom = DEFAULT_ZOOM) ->
+  createMapObject: (position, zoom = DEFAULT_ZOOM) ->
+    if (not position?)
+      position = if @places.size() > 0 then @places.getLatLng() else DEFAULT_POSITION
     def = new jQuery.Deferred()
     if @map?
       def.resolveWith @
@@ -21,10 +23,10 @@ class window.WHIB
         mapTypeId: google.maps.MapTypeId.ROADMAP
       if not @map? then def.rejectWith @
       else
-        @map.addListener 'idle', =>
+        google.maps.event.addListenerOnce @map, 'idle', =>
           def.resolveWith @
     def.done =>
-      @map.addListener 'click', (evt) ->
+      @map.addListener 'click', (evt) =>
         place = new WHIB.Place
           lat: evt.latLng.lat()
           lng: evt.latLng.lng()
@@ -39,3 +41,14 @@ class WHIB.Place extends Backbone.Model
 class WHIB.Places extends Backbone.Collection
   model: WHIB.Place
   localStorage: new Backbone.LocalStorage 'WHIB'
+  getLatLngBounds: ->
+    lats = []
+    lngs = []
+    @each (model) ->
+  	  lats.push model.get 'lat'
+  	  lngs.push model.get 'lng'
+    minLat = Math.min lats...
+    maxLat = Math.max lats...
+    minLng = Math.min lngs...
+    maxLng = Math.max lngs...
+    new google.maps.LatLngBounds new google.maps.LatLng(minLat, minLng), new google.maps.LatLng maxLat, maxLng

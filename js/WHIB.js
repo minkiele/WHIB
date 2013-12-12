@@ -17,11 +17,11 @@
     WHIB.prototype.createMapObject = function(position, zoom) {
       var def,
         _this = this;
-      if (position == null) {
-        position = DEFAULT_POSITION;
-      }
       if (zoom == null) {
         zoom = DEFAULT_ZOOM;
+      }
+      if (position == null) {
+        position = this.places.size() > 0 ? this.places.getLatLng() : DEFAULT_POSITION;
       }
       def = new jQuery.Deferred();
       if (this.map != null) {
@@ -39,7 +39,7 @@
         if (this.map == null) {
           def.rejectWith(this);
         } else {
-          this.map.addListener('idle', function() {
+          google.maps.event.addListenerOnce(this.map, 'idle', function() {
             return def.resolveWith(_this);
           });
         }
@@ -51,7 +51,7 @@
             lat: evt.latLng.lat(),
             lng: evt.latLng.lng()
           });
-          this.places.add(place);
+          _this.places.add(place);
           return void 0;
         });
       });
@@ -89,6 +89,21 @@
     Places.prototype.model = WHIB.Place;
 
     Places.prototype.localStorage = new Backbone.LocalStorage('WHIB');
+
+    Places.prototype.getLatLngBounds = function() {
+      var lats, lngs, maxLat, maxLng, minLat, minLng;
+      lats = [];
+      lngs = [];
+      this.each(function(model) {
+        lats.push(model.get('lat'));
+        return lngs.push(model.get('lng'));
+      });
+      minLat = Math.min.apply(Math, lats);
+      maxLat = Math.max.apply(Math, lats);
+      minLng = Math.min.apply(Math, lngs);
+      maxLng = Math.max.apply(Math, lngs);
+      return new google.maps.LatLngBounds(new google.maps.LatLng(minLat, minLng), new google.maps.LatLng(maxLat, maxLng));
+    };
 
     return Places;
 
