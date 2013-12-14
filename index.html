@@ -12,12 +12,8 @@
 	<p class="caption"><i>Where have I been</i>: something made for fun.</p>
 	<div id="gmap"></div>
 </div>
-<script src="bower_components/jquery/jquery.min.js"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="bower_components/underscore/underscore-min.js"></script>
-<script src="bower_components/backbone/backbone-min.js"></script>
-<script src="bower_components/Backbone.localStorage/backbone.localStorage-min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false"></script>
-<script src="js/WHIB.js"></script>
+
+<script id="whib-app" data-gmaps-key="{{GMAPS_KEY}}" data-main="js/whib-app" src="bower_components/requirejs/require.js"></script>
+
 </body>
 </html>
