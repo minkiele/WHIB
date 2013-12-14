@@ -1,5 +1,5 @@
 (function() {
-  var DEFAULT_POSITION, DEFAULT_ZOOM, _ref, _ref1,
+  var DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -7,11 +7,18 @@
 
   DEFAULT_POSITION = new google.maps.LatLng(0, 0);
 
+  DEFAULT_SYNC_TIME = 500;
+
   window.WHIB = (function() {
     function WHIB(node) {
+      var _this = this;
       this.node = jQuery(node).get(0);
       this.places = new WHIB.Places();
       this.places.fetch();
+      this.places.on('add', function(model) {
+        console.log(model);
+        return _this.places.sync();
+      });
     }
 
     WHIB.prototype.createMapObject = function(position, zoom) {
@@ -86,6 +93,8 @@
       return _ref1;
     }
 
+    Places.prototype.initialize = function() {};
+
     Places.prototype.model = WHIB.Place;
 
     Places.prototype.localStorage = new Backbone.LocalStorage('WHIB');
@@ -103,6 +112,18 @@
       minLng = Math.min.apply(Math, lngs);
       maxLng = Math.max.apply(Math, lngs);
       return new google.maps.LatLngBounds(new google.maps.LatLng(minLat, minLng), new google.maps.LatLng(maxLat, maxLng));
+    };
+
+    Places.prototype.startSync = function() {
+      var _this = this;
+      this.stopSync();
+      return this.syncTimerId = setInterval(function() {
+        return _this.sync();
+      }, DEFAULT_SYNC_TIME);
+    };
+
+    Places.prototype.stopSync = function() {
+      return clearInterval(this.syncTimerId);
     };
 
     return Places;

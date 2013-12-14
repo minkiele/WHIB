@@ -1,11 +1,15 @@
 DEFAULT_ZOOM = 1
 DEFAULT_POSITION = new google.maps.LatLng(0, 0)
+DEFAULT_SYNC_TIME = 500;
 
 class window.WHIB
   constructor: (node) ->
     @node = jQuery(node).get 0
     @places = new WHIB.Places()
     @places.fetch()
+    @places.on 'add', (model) =>
+      console.log model
+      @places.sync()
   createMapObject: (position, zoom = DEFAULT_ZOOM) ->
     if (not position?)
       position = if @places.size() > 0 then @places.getLatLng() else DEFAULT_POSITION
@@ -39,6 +43,8 @@ class WHIB.Place extends Backbone.Model
   	new google.maps.LatLng @get('lat'), @get 'lng'
 
 class WHIB.Places extends Backbone.Collection
+  initialize: ->
+    #@startSync()
   model: WHIB.Place
   localStorage: new Backbone.LocalStorage 'WHIB'
   getLatLngBounds: ->
@@ -52,3 +58,11 @@ class WHIB.Places extends Backbone.Collection
     minLng = Math.min lngs...
     maxLng = Math.max lngs...
     new google.maps.LatLngBounds new google.maps.LatLng(minLat, minLng), new google.maps.LatLng maxLat, maxLng
+  startSync: ->
+    @stopSync()
+    @syncTimerId = setInterval =>
+      @sync()
+    ,DEFAULT_SYNC_TIME
+  stopSync: ->
+  	clearInterval @syncTimerId
+

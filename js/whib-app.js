@@ -32,7 +32,7 @@
     }
   });
 
-  requirejs(['whib', 'bootstrap'], function(WHIB) {
+  requirejs(['jquery', 'whib', 'bootstrap'], function($, WHIB) {
     return new WHIB('#gmap').createMapObject();
   });
 
