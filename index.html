@@ -3,7 +3,7 @@
 <head>
 <title>WHIB: Where I've been</title>
 <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-<link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+<!--<link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">-->
 <link type="text/css" rel="stylesheet" href="css/WHIB.css">
 </head>
 <body>
@@ -11,6 +11,11 @@
 	<h1>WHIB</h1>
 	<p class="caption"><i>Where have I been</i>: something made for fun.</p>
 	<div id="gmap"></div>
+	<div id="buttons"><fieldset>
+	    <legend>Some commands</legend>
+	    <button class="btn btn-success" type="button" id="save-places">Save places</button>
+	    <button class="btn btn-danger" type="button" id="reset-places">Reset places</button>
+	</fieldset></div>
 </div>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
 <script>var require = {map: {'whib': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}};</script>

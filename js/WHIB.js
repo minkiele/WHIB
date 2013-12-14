@@ -1,5 +1,5 @@
 (function() {
-  var DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1,
+  var DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -14,10 +14,14 @@
       var _this = this;
       this.node = jQuery(node).get(0);
       this.places = new WHIB.Places();
-      this.places.fetch();
-      this.places.on('add', function(model) {
-        console.log(model);
-        return _this.places.sync();
+      this.places.fetch({
+        reset: true
+      });
+      this.places.on('add', function(place) {
+        return _this.createMarkerFor(place);
+      });
+      this.buttons = new WHIB.Buttons({
+        collection: this.places
       });
     }
 
@@ -28,7 +32,7 @@
         zoom = DEFAULT_ZOOM;
       }
       if (position == null) {
-        position = this.places.size() > 0 ? this.places.getLatLng() : DEFAULT_POSITION;
+        position = this.places.size() > 0 ? this.places.getLatLngBounds().getCenter() : DEFAULT_POSITION;
       }
       def = new jQuery.Deferred();
       if (this.map != null) {
@@ -52,7 +56,8 @@
         }
       }
       def.done(function() {
-        return _this.map.addListener('click', function(evt) {
+        var _this = this;
+        return this.map.addListener('click', function(evt) {
           var place;
           place = new WHIB.Place({
             lat: evt.latLng.lat(),
@@ -62,7 +67,17 @@
           return void 0;
         });
       });
+      def.done(function() {
+        var _this = this;
+        return this.places.each(function(place) {
+          return _this.createMarkerFor(place);
+        });
+      });
       return def.promise();
+    };
+
+    WHIB.prototype.createMarkerFor = function(place) {
+      return console.log('Marker creation logic (%f, %f)', place.get('lat'), place.get('lng'));
     };
 
     return WHIB;
@@ -129,5 +144,36 @@
     return Places;
 
   })(Backbone.Collection);
+
+  WHIB.Buttons = (function(_super) {
+    __extends(Buttons, _super);
+
+    function Buttons() {
+      _ref2 = Buttons.__super__.constructor.apply(this, arguments);
+      return _ref2;
+    }
+
+    Buttons.prototype.el = '#buttons';
+
+    Buttons.prototype.events = {
+      'click #save-places': 'save',
+      'click #reset-places': 'reset'
+    };
+
+    Buttons.prototype.save = function() {
+      return this.collection.each(function(place) {
+        return place.save();
+      });
+    };
+
+    Buttons.prototype.reset = function() {
+      return this.collection.each(function(place) {
+        return place.destroy();
+      });
+    };
+
+    return Buttons;
+
+  })(Backbone.View);
 
 }).call(this);

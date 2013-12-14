@@ -11,7 +11,8 @@ require.config
         bootstrap: 'bower_components/bootstrap/dist/js/bootstrap.min'
         underscore: 'bower_components/underscore/underscore-min'
         backbone: 'bower_components/backbone/backbone-min'
-        localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage-min'
+        localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage'
+        #localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage-min'
         async: 'bower_components/requirejs-plugins/src/async'
         whib: 'js/WHIB'
     shim:
@@ -26,4 +27,4 @@ require.config
             exports: 'WHIB'
 
 requirejs ['jquery', 'whib', 'bootstrap'], ($, WHIB) ->
-    new WHIB('#gmap').createMapObject();
+    window.whibApp = new WHIB('#gmap').createMapObject();
