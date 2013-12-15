@@ -1,5 +1,5 @@
 (function() {
-  var DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3, _ref4,
+  var DEFAULT_DBLCLICK_HACK_TIMEOUT, DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -9,15 +9,14 @@
 
   DEFAULT_SYNC_TIME = 500;
 
+  DEFAULT_DBLCLICK_HACK_TIMEOUT = 400;
+
   window.WHIB = (function() {
     function WHIB(node) {
       this.node = jQuery(node).get(0);
       this.places = new WHIB.Places();
       this.places.fetch({
         reset: true
-      });
-      this.buttons = new WHIB.Buttons({
-        collection: this.places
       });
     }
 
@@ -48,6 +47,18 @@
 
     Place.prototype.getLatLng = function() {
       return new google.maps.LatLng(this.get('lat'), this.get('lng'));
+    };
+
+    Place.prototype.validate = function(attrs) {
+      if (attrs.lat == null) {
+        'Missing lat';
+      }
+      if (attrs.lng == null) {
+        'Missing lng';
+      }
+      if ((attrs.description == null) || attrs.description.length === 0) {
+        return 'Missing description';
+      }
     };
 
     return Place;
@@ -137,15 +148,20 @@
     };
 
     MapView.prototype.addMapListener = function() {
-      var _this = this;
-      return this.map.addListener('click', function(evt) {
-        var place;
-        place = new WHIB.Place({
-          lat: evt.latLng.lat(),
-          lng: evt.latLng.lng()
-        });
-        _this.collection.add(place);
+      var dblclickHackTimerId,
+        _this = this;
+      dblclickHackTimerId = 0;
+      this.map.addListener('click', function(evt) {
+        dblclickHackTimerId = setTimeout(function() {
+          return _this.collection.add({
+            lat: evt.latLng.lat(),
+            lng: evt.latLng.lng()
+          });
+        }, DEFAULT_DBLCLICK_HACK_TIMEOUT);
         return void 0;
+      });
+      return this.map.addListener('dblclick', function() {
+        return clearTimeout(dblclickHackTimerId);
       });
     };
 
@@ -192,17 +208,21 @@
         draggable: true,
         map: this.map
       });
-      this.info = new google.maps.InfoWindow();
       this.marker.addListener('dragend', function() {
         var position;
         position = _this.marker.getPosition();
-        return _this.model.set({
+        _this.model.set({
           lat: position.lat(),
           lng: position.lng()
         });
+        return _this.model.save();
       });
+      this.status = 'show';
       this.marker.addListener('click', function() {
         return _this.render();
+      });
+      this.marker.addListener('dblclick', function() {
+        return clearTimeout(dblclickHackTimerId);
       });
       this.listenTo(this.model, 'change', this.render);
       this.listenTo(this.model, 'destroy', function() {
@@ -210,56 +230,61 @@
         _this.marker.setMap();
         return _this.info.close();
       });
+      this.on('render', function(status) {
+        _this.status = status;
+        return _this.render();
+      });
       if (this.model.isNew()) {
-        return this.render();
+        return this.trigger('render', 'create');
       }
     };
 
+    PlaceView.prototype.info = new google.maps.InfoWindow();
+
+    PlaceView.prototype.createModeTemplate = jQuery('#create-mode-template').html();
+
+    PlaceView.prototype.editModeTemplate = jQuery('#edit-mode-template').html();
+
+    PlaceView.prototype.showModeTemplate = jQuery('#show-mode-template').html();
+
     PlaceView.prototype.render = function() {
-      if (this.model.isNew()) {
-        this.$el.html('CREATE/EDIT MODE');
-      } else {
-        this.$el.html('SHOW MODE');
+      switch (this.status) {
+        case 'show':
+          this.$el.html(this.showModeTemplate);
+          this.$('.description').text(this.model.get('description'));
+          break;
+        case 'create':
+          this.$el.html(this.createModeTemplate);
+          break;
+        case 'edit':
+          this.$el.html(this.editModeTemplate);
+          this.$('.description').val(this.model.get('description'));
       }
       this.info.setContent(this.el);
       return this.info.open(this.map, this.marker);
     };
 
+    PlaceView.prototype.events = {
+      'click .save': function() {
+        this.model.set('description', this.$('.description').val());
+        if (this.model.isValid()) {
+          this.model.save();
+          return this.trigger('render', 'show');
+        }
+      },
+      'click .delete': function() {
+        this.model.destroy();
+        return this.remove();
+      },
+      'click .edit': function() {
+        return this.trigger('render', 'edit');
+      },
+      'click .undo': function() {
+        return this.trigger('render', 'show');
+      }
+    };
+
     return PlaceView;
-
-  })(Backbone.View);
-
-  WHIB.Buttons = (function(_super) {
-    __extends(Buttons, _super);
-
-    function Buttons() {
-      _ref4 = Buttons.__super__.constructor.apply(this, arguments);
-      return _ref4;
-    }
-
-    Buttons.prototype.el = '#buttons';
-
-    Buttons.prototype.events = {
-      'click #save-places': 'save',
-      'click #reset-places': 'reset'
-    };
-
-    Buttons.prototype.save = function() {
-      this.collection.each(function(place) {
-        place.save();
-        return true;
-      });
-      return void 0;
-    };
-
-    Buttons.prototype.reset = function() {
-      this.collection.each(function(place, index) {
-        return place.destroy();
-      });
-      return void 0;
-    };
-
-    return Buttons;
 
   })(Backbone.View);
 

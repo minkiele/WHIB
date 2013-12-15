@@ -11,15 +11,27 @@
 	<h1>WHIB</h1>
 	<p class="caption"><i>Where have I been</i>: something made for fun.</p>
 	<div id="gmap"></div>
-	<div id="buttons"><fieldset>
-	    <legend>Some commands</legend>
-	    <button class="btn btn-success" type="button" id="save-places">Save places</button>
-	    <button class="btn btn-danger" type="button" id="reset-places">Reset places</button>
-	</fieldset></div>
 </div>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
+<script type="text/template" id="edit-mode-template">
+    <div>
+        <div class="form-group"><label for="description">Description</label><input class="description form-control" type="text" name="description" value="" placeholder="What did you do there?"></div>
+        <div class="form-group clearfix"><div class="pull-left"><button class="save btn btn-success btn-xs" type="button">Save</button> <button class="undo btn btn-warning btn-xs" type="button">Undo</button></div> <button class="delete btn btn-danger btn-xs pull-right" type="button">Delete</button></div>
+    </div>
+</script>
+<script type="text/template" id="create-mode-template">
+    <div>
+        <div class="form-group"><label for="description">Description</label><input class="description form-control" type="text" name="description" value="" placeholder="What did you do there?"></div>
+        <div class="form-group clearfix"><button class="save btn btn-success btn-xs pull-left" type="button">Save</button> <button class="delete btn btn-warning btn-xs pull-right" type="button">Nevermind</button></div>
+    </div>
+</script>
+<script type="text/template" id="show-mode-template">
+    <div>
+        <p class="description"></p>
+        <div class="form-group clearfix"><button class="edit btn btn-info btn-xs pull-left" type="button">Edit</button></div>
+    </div>
+</script>
 <script>var require = {map: {'whib': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}};</script>
 <script data-main="js/whib-app" src="bower_components/requirejs/require.js"></script>
-
 </body>
 </html>
