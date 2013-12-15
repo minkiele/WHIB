@@ -144,7 +144,8 @@
         }
       }
       this.def.done(this.addMapListener);
-      return this.def.done(this.populateMap);
+      this.def.done(this.populateMap);
+      return this.def.done(this.fitBounds);
     };
 
     MapView.prototype.addMapListener = function() {
@@ -176,8 +177,10 @@
       return void 0;
     };
 
-    MapView.prototype.promise = function() {
-      return this.def.promise();
+    MapView.prototype.fitBounds = function() {
+      if (this.collection.size() > 0) {
+        return this.map.fitBounds(this.collection.getLatLngBounds());
+      }
     };
 
     MapView.prototype.createViewFor = function(place) {
@@ -186,6 +189,10 @@
         collection: this.collection,
         map: this.map
       });
+    };
+
+    MapView.prototype.promise = function() {
+      return this.def.promise();
     };
 
     return MapView;
@@ -251,7 +258,7 @@
       switch (this.status) {
         case 'show':
           this.$el.html(this.showModeTemplate);
-          this.$('.description').text(this.model.get('description'));
+          this.$('.content').text(this.model.get('description'));
           break;
         case 'create':
           this.$el.html(this.createModeTemplate);
@@ -276,7 +283,7 @@
         this.model.destroy();
         return this.remove();
       },
-      'click .edit': function() {
+      'dblclick .content': function() {
         return this.trigger('render', 'edit');
       },
       'click .undo': function() {

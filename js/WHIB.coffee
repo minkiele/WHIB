@@ -71,9 +71,11 @@ class WHIB.MapView extends Backbone.View
       else
         google.maps.event.addListenerOnce @map, 'idle', =>
           @def.resolveWith @
+
     @def.done @addMapListener
     @def.done @populateMap
-
+    @def.done @fitBounds
+    
   addMapListener: ->
   
     dblclickHackTimerId = 0
@@ -88,7 +90,6 @@ class WHIB.MapView extends Backbone.View
 
     @map.addListener 'dblclick', ->
       clearTimeout dblclickHackTimerId
-    
 
   populateMap: ->
     @collection.each (place) =>
@@ -97,14 +98,18 @@ class WHIB.MapView extends Backbone.View
       @createViewFor place
     undefined
 
-  promise: ->
-    @def.promise()
+  fitBounds: ->
+    if @collection.size() > 0
+      @map.fitBounds @collection.getLatLngBounds()
 
   createViewFor: (place) ->
     new WHIB.PlaceView
       model: place
       collection: @collection
       map: @map
+
+  promise: ->
+    @def.promise()
 
 class WHIB.PlaceView extends Backbone.View
   initialize: (options) ->
@@ -142,7 +147,6 @@ class WHIB.PlaceView extends Backbone.View
 
     if @model.isNew() then @trigger 'render', 'create'
 
-
   info: new google.maps.InfoWindow()
 
   createModeTemplate: jQuery('#create-mode-template').html()
@@ -153,7 +157,7 @@ class WHIB.PlaceView extends Backbone.View
     switch @status
       when 'show'
         @$el.html @showModeTemplate
-        @$('.description').text @model.get 'description'
+        @$('.content').text @model.get 'description'
       when 'create'
         @$el.html @createModeTemplate
       when 'edit'
@@ -172,7 +176,8 @@ class WHIB.PlaceView extends Backbone.View
     'click .delete': ->
       @model.destroy()
       @remove()
-    'click .edit': ->
+    #'click .edit': ->
+    'dblclick .content': ->
       @trigger 'render', 'edit'
     'click .undo': ->
       @trigger 'render', 'show'
