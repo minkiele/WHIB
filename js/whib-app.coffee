@@ -10,9 +10,8 @@ require.config
         jquery: 'bower_components/jquery/jquery.min'
         bootstrap: 'bower_components/bootstrap/dist/js/bootstrap.min'
         underscore: 'bower_components/underscore/underscore-min'
-        backbone: 'bower_components/backbone/backbone-min'
+        backbone: 'bower_components/backbone/backbone'
         localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage'
-        #localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage-min'
         async: 'bower_components/requirejs-plugins/src/async'
         whib: 'js/WHIB'
     shim:
