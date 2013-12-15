@@ -79,8 +79,10 @@ class WHIB.Buttons extends Backbone.View
     'click #reset-places': 'reset'
   save: ->
     @collection.each (place) ->
-      place.save()
+      place.save
+        wait: true
   reset: ->
     @collection.each (place) ->
-      place.destroy()
+      place.destroy
+        wait: true
     
