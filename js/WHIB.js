@@ -131,27 +131,32 @@
           });
         }
       }
-      this.def.done(function() {
-        var _this = this;
-        return this.map.addListener('click', function(evt) {
-          var place;
-          place = new WHIB.Place({
-            lat: evt.latLng.lat(),
-            lng: evt.latLng.lng()
-          });
-          _this.collection.add(place);
-          return void 0;
+      this.def.done(this.addMapListener);
+      return this.def.done(this.populateMap);
+    };
+
+    MapView.prototype.addMapListener = function() {
+      var _this = this;
+      return this.map.addListener('click', function(evt) {
+        var place;
+        place = new WHIB.Place({
+          lat: evt.latLng.lat(),
+          lng: evt.latLng.lng()
         });
+        _this.collection.add(place);
+        return void 0;
       });
-      return this.def.done(function() {
-        var _this = this;
-        this.collection.each(function(place) {
-          return _this.createViewFor(place);
-        });
-        return this.collection.on('add', function(place) {
-          return _this.createViewFor(place);
-        });
+    };
+
+    MapView.prototype.populateMap = function() {
+      var _this = this;
+      this.collection.each(function(place) {
+        return _this.createViewFor(place);
       });
+      this.collection.on('add', function(place) {
+        return _this.createViewFor(place);
+      });
+      return void 0;
     };
 
     MapView.prototype.promise = function() {
@@ -185,7 +190,8 @@
         draggable: true,
         map: options.map
       });
-      return this.marker.addListener('dragend', function() {
+      this.info = new google.maps.InfoWindow();
+      this.marker.addListener('dragend', function() {
         var position;
         position = _this.marker.getPosition();
         return _this.model.set({
@@ -193,6 +199,19 @@
           lng: position.lng()
         });
       });
+      this.marker.addListener('click', function() {
+        _this.render();
+        return _this.info.open(options.map, _this.marker);
+      });
+      return this.listenTo(this.model, 'change', this.render);
+    };
+
+    PlaceView.prototype.render = function() {
+      if (this.model.isNew()) {
+        return this.info.setContent('EDIT MODE');
+      } else {
+        return this.info.setContent('SHOW MODE');
+      }
     };
 
     return PlaceView;

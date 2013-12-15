@@ -63,20 +63,27 @@ class WHIB.MapView extends Backbone.View
       else
         google.maps.event.addListenerOnce @map, 'idle', =>
           @def.resolveWith @
-    @def.done ->
-      @map.addListener 'click', (evt) =>
-        place = new WHIB.Place
-          lat: evt.latLng.lat()
-          lng: evt.latLng.lng()
-        @collection.add place
-        undefined
-    @def.done ->
-      @collection.each (place) =>
-        @createViewFor place
-      @collection.on 'add', (place) =>
-        @createViewFor place
+    @def.done @addMapListener
+    @def.done @populateMap
+
+  addMapListener: ->
+    @map.addListener 'click', (evt) =>
+      place = new WHIB.Place
+        lat: evt.latLng.lat()
+        lng: evt.latLng.lng()
+      @collection.add place
+      undefined
+
+  populateMap: ->
+    @collection.each (place) =>
+      @createViewFor place
+    @collection.on 'add', (place) =>
+      @createViewFor place
+    undefined
+
   promise: ->
     @def.promise()
+
   createViewFor: (place) ->
     new WHIB.PlaceView
       model: place
@@ -89,11 +96,25 @@ class WHIB.PlaceView extends Backbone.View
       position: @model.getLatLng()
       draggable: true
       map: options.map
+      
+    @info = new google.maps.InfoWindow()
+
     @marker.addListener 'dragend', =>
       position = @marker.getPosition()
       @model.set
         lat: position.lat()
         lng: position.lng()
+    @marker.addListener 'click', =>
+      @render()
+      @info.open options.map, @marker
+
+    @listenTo @model, 'change', @render
+
+  render: ->
+    if @model.isNew()
+      @info.setContent 'EDIT MODE'
+    else
+      @info.setContent 'SHOW MODE'
 
 class WHIB.Buttons extends Backbone.View
   el: '#buttons'
