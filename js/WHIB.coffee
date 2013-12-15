@@ -16,6 +16,7 @@ class window.WHIB
       zoom: zoom
       el: @node
       collection: @places
+    @mapView.promise()
 
 class WHIB.Place extends Backbone.Model
   getLatLng: ->
@@ -92,10 +93,12 @@ class WHIB.MapView extends Backbone.View
 
 class WHIB.PlaceView extends Backbone.View
   initialize: (options) ->
+    @map = options.map
+
     @marker = new google.maps.Marker
       position: @model.getLatLng()
       draggable: true
-      map: options.map
+      map: @map
       
     @info = new google.maps.InfoWindow()
 
@@ -104,17 +107,25 @@ class WHIB.PlaceView extends Backbone.View
       @model.set
         lat: position.lat()
         lng: position.lng()
-    @marker.addListener 'click', =>
-      @render()
-      @info.open options.map, @marker
+
+    @marker.addListener 'click', => @render()
 
     @listenTo @model, 'change', @render
+    @listenTo @model, 'destroy', =>
+      @marker.setVisible no
+      @marker.setMap()
+      @info.close()
+
+    if @model.isNew() then @render()
 
   render: ->
     if @model.isNew()
-      @info.setContent 'EDIT MODE'
+      @$el.html 'CREATE/EDIT MODE'
     else
-      @info.setContent 'SHOW MODE'
+      @$el.html 'SHOW MODE'
+
+    @info.setContent @el
+    @info.open @map, @marker
 
 class WHIB.Buttons extends Backbone.View
   el: '#buttons'
@@ -123,14 +134,11 @@ class WHIB.Buttons extends Backbone.View
     'click #reset-places': 'reset'
   save: ->
     @collection.each (place) ->
-      place.save
-        wait: true
+      place.save()
       on
     undefined
   reset: ->
-    @collection.each (place) ->
-      place.destroy
-        wait: true
-      on
+    @collection.each (place, index) ->
+      place.destroy()
     undefined
     

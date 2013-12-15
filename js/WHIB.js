@@ -25,12 +25,13 @@
       if (zoom == null) {
         zoom = DEFAULT_ZOOM;
       }
-      return this.mapView = new WHIB.MapView({
+      this.mapView = new WHIB.MapView({
         position: position,
         zoom: zoom,
         el: this.node,
         collection: this.places
       });
+      return this.mapView.promise();
     };
 
     return WHIB;
@@ -185,10 +186,11 @@
 
     PlaceView.prototype.initialize = function(options) {
       var _this = this;
+      this.map = options.map;
       this.marker = new google.maps.Marker({
         position: this.model.getLatLng(),
         draggable: true,
-        map: options.map
+        map: this.map
       });
       this.info = new google.maps.InfoWindow();
       this.marker.addListener('dragend', function() {
@@ -200,18 +202,27 @@
         });
       });
       this.marker.addListener('click', function() {
-        _this.render();
-        return _this.info.open(options.map, _this.marker);
+        return _this.render();
       });
-      return this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'destroy', function() {
+        _this.marker.setVisible(false);
+        _this.marker.setMap();
+        return _this.info.close();
+      });
+      if (this.model.isNew()) {
+        return this.render();
+      }
     };
 
     PlaceView.prototype.render = function() {
       if (this.model.isNew()) {
-        return this.info.setContent('EDIT MODE');
+        this.$el.html('CREATE/EDIT MODE');
       } else {
-        return this.info.setContent('SHOW MODE');
+        this.$el.html('SHOW MODE');
       }
+      this.info.setContent(this.el);
+      return this.info.open(this.map, this.marker);
     };
 
     return PlaceView;
@@ -235,20 +246,15 @@
 
     Buttons.prototype.save = function() {
       this.collection.each(function(place) {
-        place.save({
-          wait: true
-        });
+        place.save();
         return true;
       });
       return void 0;
     };
 
     Buttons.prototype.reset = function() {
-      this.collection.each(function(place) {
-        place.destroy({
-          wait: true
-        });
-        return true;
+      this.collection.each(function(place, index) {
+        return place.destroy();
       });
       return void 0;
     };
