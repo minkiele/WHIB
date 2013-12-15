@@ -176,7 +176,6 @@ class WHIB.PlaceView extends Backbone.View
     'click .delete': ->
       @model.destroy()
       @remove()
-    #'click .edit': ->
     'dblclick .content': ->
       @trigger 'render', 'edit'
     'click .undo': ->

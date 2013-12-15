@@ -12,7 +12,6 @@
 	<p class="caption"><i>Where have I been</i>: something made for fun.</p>
 	<div id="gmap"></div>
 </div>
-<!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
 <script type="text/template" id="edit-mode-template">
     <div>
         <div class="form-group"><label for="description">Description</label><input class="description form-control" type="text" name="description" value="" placeholder="What did you do there?"></div>
@@ -28,9 +27,9 @@
 <script type="text/template" id="show-mode-template">
     <div>
         <p class="content"></p>
-        <!-- <div class="form-group clearfix"><button class="edit btn btn-info btn-xs pull-left" type="button">Edit</button></div> -->
     </div>
 </script>
+<!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
 <script>var require = {map: {'whib': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}};</script>
 <script data-main="js/whib-app" src="bower_components/requirejs/require.js"></script>
 </body>
