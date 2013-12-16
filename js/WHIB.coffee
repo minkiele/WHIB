@@ -32,15 +32,10 @@ class WHIB.Places extends Backbone.Collection
   model: WHIB.Place
   localStorage: new Backbone.LocalStorage 'WHIB'
   getLatLngBounds: ->
-    lats = []
-    lngs = []
-    lats = @pluck 'lat'
-    lngs = @pluck 'lng'
-    minLat = Math.min lats...
-    maxLat = Math.max lats...
-    minLng = Math.min lngs...
-    maxLng = Math.max lngs...
-    new google.maps.LatLngBounds new google.maps.LatLng(minLat, minLng), new google.maps.LatLng maxLat, maxLng
+    bounds = new google.maps.LatLngBounds()
+    @each (model) ->
+      bounds.extend model.getLatLng()
+    bounds
   startSync: ->
     @stopSync()
     @syncTimerId = setInterval =>

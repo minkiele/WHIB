@@ -78,16 +78,12 @@
     Places.prototype.localStorage = new Backbone.LocalStorage('WHIB');
 
     Places.prototype.getLatLngBounds = function() {
-      var lats, lngs, maxLat, maxLng, minLat, minLng;
-      lats = [];
-      lngs = [];
-      lats = this.pluck('lat');
-      lngs = this.pluck('lng');
-      minLat = Math.min.apply(Math, lats);
-      maxLat = Math.max.apply(Math, lats);
-      minLng = Math.min.apply(Math, lngs);
-      maxLng = Math.max.apply(Math, lngs);
-      return new google.maps.LatLngBounds(new google.maps.LatLng(minLat, minLng), new google.maps.LatLng(maxLat, maxLng));
+      var bounds;
+      bounds = new google.maps.LatLngBounds();
+      this.each(function(model) {
+        return bounds.extend(model.getLatLng());
+      });
+      return bounds;
     };
 
     Places.prototype.startSync = function() {
