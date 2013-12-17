@@ -114,6 +114,7 @@ class WHIB.PlaceView extends Backbone.View
       position: @model.getLatLng()
       draggable: true
       map: @map
+      animation: google.maps.Animation[if @model.isNew() then 'BOUNCE' else 'DROP']
 
     @marker.addListener 'dragend', =>
       position = @marker.getPosition()
@@ -151,11 +152,14 @@ class WHIB.PlaceView extends Backbone.View
   render: ->
     switch @status
       when 'show'
+        @marker.setAnimation()
         @$el.html @showModeTemplate
         @$('.content').text @model.get 'description'
       when 'create'
+        @marker.setAnimation google.maps.Animation.BOUNCE
         @$el.html @createModeTemplate
       when 'edit'
+        @marker.setAnimation google.maps.Animation.BOUNCE
         @$el.html @editModeTemplate
         @$('.description').val @model.get 'description'
 

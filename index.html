@@ -1,17 +1,28 @@
 <!doctype html>
 <html>
 <head>
-<title>WHIB: Where I've been</title>
+<title>WHIB: Where Have I Been</title>
 <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 <!--<link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">-->
 <link type="text/css" rel="stylesheet" href="css/WHIB.css">
 </head>
 <body>
-<div class="container">
-	<h1>WHIB</h1>
-	<p class="caption"><i>Where have I been</i>: something made for fun.</p>
-	<div id="gmap"></div>
-</div>
+    <header class="container">
+      <div class="page-header">
+        <h1>WHIB</h1>
+        <p class="caption"><i>Where Have I Been</i>: something made for fun.</p>
+      </div>
+    </header>
+    <div class="container">
+	    <div id="gmap"></div>
+	    <hr>
+	    <footer>
+            <p>I wanted to learn something new so one saturday morning I sat at my desk and thought of this simple application. It took me a while but at last I could make it.</p>
+            <p>Frontend written in Coffeescript and LessCSS, it uses jQuery for everything, Bootstrap for coolness, Backbone for MVC, Backbone.Localstorage for persistence, RequireJS for modules and plugins loading, Google Maps API V3 guess for what.</p>
+            <p>Backend runs over Heroku, NodeJS, Grunt for the build tasks, Bower for the assets, ExpressJS for the webserver, Hogan.js for the mustaches and Consolidate for serving the compiled HTML templates.</p>
+            <p><b>2013, Michele Montagner</b></p>
+        </footer>
+	</div>
 <script type="text/template" id="edit-mode-template">
     <div>
         <div class="form-group"><label for="description">Description</label><input class="description form-control" type="text" name="description" value="" placeholder="What did you do there?"></div>

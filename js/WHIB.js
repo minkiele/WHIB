@@ -209,7 +209,8 @@
       this.marker = new google.maps.Marker({
         position: this.model.getLatLng(),
         draggable: true,
-        map: this.map
+        map: this.map,
+        animation: google.maps.Animation[this.model.isNew() ? 'BOUNCE' : 'DROP']
       });
       this.marker.addListener('dragend', function() {
         var position;
@@ -253,13 +254,16 @@
     PlaceView.prototype.render = function() {
       switch (this.status) {
         case 'show':
+          this.marker.setAnimation();
           this.$el.html(this.showModeTemplate);
           this.$('.content').text(this.model.get('description'));
           break;
         case 'create':
+          this.marker.setAnimation(google.maps.Animation.BOUNCE);
           this.$el.html(this.createModeTemplate);
           break;
         case 'edit':
+          this.marker.setAnimation(google.maps.Animation.BOUNCE);
           this.$el.html(this.editModeTemplate);
           this.$('.description').val(this.model.get('description'));
       }

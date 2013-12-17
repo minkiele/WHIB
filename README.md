@@ -11,3 +11,5 @@ Next run *npm install* and *bower install* to install required *grunt* tasks and
 You'll want to run *grunt watch* command to compile every .coffee and .less file inside the project.
 
 Remember to call `heroku config:set GMAPS_KEY=GMAPS_API_KEY`
+
+WHIB.sh has some useful commands I wrote to automatize the most common operations when deploying to Heroku
