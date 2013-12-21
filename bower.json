@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "requirejs": "~2.1.9",
-    "requirejs-plugins": "~1.0.2"
+    "requirejs-plugins": "~1.0.2",
+    "momentjs": "~2.4.0"
   }
 }

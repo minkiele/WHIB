@@ -2,6 +2,7 @@ DEFAULT_ZOOM = 1
 DEFAULT_POSITION = new google.maps.LatLng(0, 0)
 DEFAULT_SYNC_TIME = 500
 DEFAULT_DBLCLICK_HACK_TIMEOUT = 400
+DATE_FORMAT = 'DD/MM/YYYY'
 
 #Main controller
 class window.WHIB
@@ -156,17 +157,17 @@ class WHIB.PlaceView extends Backbone.View
         @marker.setAnimation()
         @$el.html @showModeTemplate
           description: @model.get 'description'
-          time: @model.get 'time'
+          time: moment(@model.get 'time').format DATE_FORMAT
       when 'create'
         @marker.setAnimation google.maps.Animation.BOUNCE
         @$el.html @createModeTemplate
           description: ''
-          time: new Date()
+          time: moment().format DATE_FORMAT
       when 'edit'
         @marker.setAnimation google.maps.Animation.BOUNCE
         @$el.html @editModeTemplate
           description: @model.get 'description'
-          time: @model.get 'time'
+          time: moment(@model.get 'time').format DATE_FORMAT
 
     @info.setContent @el
     @info.open @map, @marker
@@ -174,6 +175,7 @@ class WHIB.PlaceView extends Backbone.View
   events:
     'click .save': ->
       @model.set 'description', @$('.description').val()
+      @model.set 'time', moment(@$('.time').val(), DATE_FORMAT).toDate()
       if @model.isValid()
         @model.save()
         @trigger 'render', 'show'

@@ -14,6 +14,7 @@ require.config
         localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage'
         async: 'bower_components/requirejs-plugins/src/async'
         whib: 'js/WHIB'
+        moment: 'bower_components/momentjs/min/moment.min'
     shim:
         backbone:
             deps: ['underscore', 'jquery']
@@ -22,7 +23,7 @@ require.config
             exports: '_'
         bootstrap: ['jquery']
         whib:
-            deps: ['jquery', 'backbone', 'localstorage', 'gmaps'],
+            deps: ['jquery', 'backbone', 'localstorage', 'gmaps', 'moment'],
             exports: 'WHIB'
 
 requirejs ['jquery', 'whib', 'bootstrap'], ($, WHIB) ->

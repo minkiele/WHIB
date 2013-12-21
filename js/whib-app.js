@@ -14,7 +14,8 @@
       backbone: 'bower_components/backbone/backbone',
       localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage',
       async: 'bower_components/requirejs-plugins/src/async',
-      whib: 'js/WHIB'
+      whib: 'js/WHIB',
+      moment: 'bower_components/momentjs/min/moment.min'
     },
     shim: {
       backbone: {
@@ -26,7 +27,7 @@
       },
       bootstrap: ['jquery'],
       whib: {
-        deps: ['jquery', 'backbone', 'localstorage', 'gmaps'],
+        deps: ['jquery', 'backbone', 'localstorage', 'gmaps', 'moment'],
         exports: 'WHIB'
       }
     }

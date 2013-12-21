@@ -1,5 +1,5 @@
 (function() {
-  var DEFAULT_DBLCLICK_HACK_TIMEOUT, DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3,
+  var DATE_FORMAT, DEFAULT_DBLCLICK_HACK_TIMEOUT, DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -10,6 +10,8 @@
   DEFAULT_SYNC_TIME = 500;
 
   DEFAULT_DBLCLICK_HACK_TIMEOUT = 400;
+
+  DATE_FORMAT = 'DD/MM/YYYY';
 
   window.WHIB = (function() {
     function WHIB(node) {
@@ -260,21 +262,21 @@
           this.marker.setAnimation();
           this.$el.html(this.showModeTemplate({
             description: this.model.get('description'),
-            time: this.model.get('time')
+            time: moment(this.model.get('time')).format(DATE_FORMAT)
           }));
           break;
         case 'create':
           this.marker.setAnimation(google.maps.Animation.BOUNCE);
           this.$el.html(this.createModeTemplate({
             description: '',
-            time: new Date()
+            time: moment().format(DATE_FORMAT)
           }));
           break;
         case 'edit':
           this.marker.setAnimation(google.maps.Animation.BOUNCE);
           this.$el.html(this.editModeTemplate({
             description: this.model.get('description'),
-            time: this.model.get('time')
+            time: moment(this.model.get('time')).format(DATE_FORMAT)
           }));
       }
       this.info.setContent(this.el);
@@ -284,6 +286,7 @@
     PlaceView.prototype.events = {
       'click .save': function() {
         this.model.set('description', this.$('.description').val());
+        this.model.set('time', moment(this.$('.time').val(), DATE_FORMAT).toDate());
         if (this.model.isValid()) {
           this.model.save();
           return this.trigger('render', 'show');
