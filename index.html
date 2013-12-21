@@ -24,20 +24,23 @@
         </footer>
 	</div>
 <script type="text/template" id="edit-mode-template">
-    <div>
-        <div class="form-group"><label for="description">Description</label><input class="description form-control" type="text" name="description" value="" placeholder="What did you do there?"></div>
+    <div class="edit">
+        <div class="form-group"><label for="description">Where?</label><input class="description form-control" type="text" name="description" value="<%= description %>" placeholder="What did you do there?"></div>
+        <div class="form-group"><label for="time">When?</label><input class="time form-control" type="text" name="time" value="<%=time%>" placeholder="When did you get there?"></div>
         <div class="form-group clearfix"><div class="pull-left"><button class="save btn btn-success btn-xs" type="button">Save</button> <button class="undo btn btn-warning btn-xs" type="button">Undo</button></div> <button class="delete btn btn-danger btn-xs pull-right" type="button">Delete</button></div>
     </div>
 </script>
 <script type="text/template" id="create-mode-template">
-    <div>
-        <div class="form-group"><label for="description">Description</label><input class="description form-control" type="text" name="description" value="" placeholder="What did you do there?"></div>
+    <div class="create">
+        <div class="form-group"><label for="description">Where?</label><input class="description form-control" type="text" name="description" value="<%= description %>" placeholder="What did you do there?"></div>
+        <div class="form-group"><label for="time">When?</label><input class="time form-control" type="text" name="time" value="<%= time %>" placeholder="When did you get there?"></div>
         <div class="form-group clearfix"><button class="save btn btn-success btn-xs pull-left" type="button">Save</button> <button class="delete btn btn-warning btn-xs pull-right" type="button">Nevermind</button></div>
     </div>
 </script>
 <script type="text/template" id="show-mode-template">
-    <div>
-        <p class="content"></p>
+    <div class="show">
+        <p class="description"><%= description %></p>
+        <p class="time"><%= time %></p>
     </div>
 </script>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->

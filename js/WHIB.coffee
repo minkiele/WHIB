@@ -26,6 +26,7 @@ class WHIB.Place extends Backbone.Model
     if (not attrs.lat?) then 'Missing lat'
     if (not attrs.lng?) then 'Missing lng'
     if (not attrs.description?) or attrs.description.length is 0 then 'Missing description'
+    if (not attrs.time?) then 'Missing time'
 
 #Model for a collection of places
 class WHIB.Places extends Backbone.Collection
@@ -145,27 +146,31 @@ class WHIB.PlaceView extends Backbone.View
 
   info: new google.maps.InfoWindow()
 
-  createModeTemplate: jQuery('#create-mode-template').html()
-  editModeTemplate: jQuery('#edit-mode-template').html()
-  showModeTemplate: jQuery('#show-mode-template').html()
+  createModeTemplate: _.template jQuery('#create-mode-template').html()
+  editModeTemplate: _.template jQuery('#edit-mode-template').html()
+  showModeTemplate: _.template jQuery('#show-mode-template').html()
 
   render: ->
     switch @status
       when 'show'
         @marker.setAnimation()
         @$el.html @showModeTemplate
-        @$('.content').text @model.get 'description'
+          description: @model.get 'description'
+          time: @model.get 'time'
       when 'create'
         @marker.setAnimation google.maps.Animation.BOUNCE
         @$el.html @createModeTemplate
+          description: ''
+          time: new Date()
       when 'edit'
         @marker.setAnimation google.maps.Animation.BOUNCE
         @$el.html @editModeTemplate
-        @$('.description').val @model.get 'description'
+          description: @model.get 'description'
+          time: @model.get 'time'
 
     @info.setContent @el
     @info.open @map, @marker
-  
+
   events:
     'click .save': ->
       @model.set 'description', @$('.description').val()
@@ -175,7 +180,6 @@ class WHIB.PlaceView extends Backbone.View
     'click .delete': ->
       @model.destroy()
       @remove()
-    'dblclick .content': ->
-      @trigger 'render', 'edit'
+    'dblclick .show': -> @trigger 'render', 'edit'
     'click .undo': ->
       @trigger 'render', 'show'

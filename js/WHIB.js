@@ -57,7 +57,10 @@
         'Missing lng';
       }
       if ((attrs.description == null) || attrs.description.length === 0) {
-        return 'Missing description';
+        'Missing description';
+      }
+      if (attrs.time == null) {
+        return 'Missing time';
       }
     };
 
@@ -245,27 +248,34 @@
 
     PlaceView.prototype.info = new google.maps.InfoWindow();
 
-    PlaceView.prototype.createModeTemplate = jQuery('#create-mode-template').html();
+    PlaceView.prototype.createModeTemplate = _.template(jQuery('#create-mode-template').html());
 
-    PlaceView.prototype.editModeTemplate = jQuery('#edit-mode-template').html();
+    PlaceView.prototype.editModeTemplate = _.template(jQuery('#edit-mode-template').html());
 
-    PlaceView.prototype.showModeTemplate = jQuery('#show-mode-template').html();
+    PlaceView.prototype.showModeTemplate = _.template(jQuery('#show-mode-template').html());
 
     PlaceView.prototype.render = function() {
       switch (this.status) {
         case 'show':
           this.marker.setAnimation();
-          this.$el.html(this.showModeTemplate);
-          this.$('.content').text(this.model.get('description'));
+          this.$el.html(this.showModeTemplate({
+            description: this.model.get('description'),
+            time: this.model.get('time')
+          }));
           break;
         case 'create':
           this.marker.setAnimation(google.maps.Animation.BOUNCE);
-          this.$el.html(this.createModeTemplate);
+          this.$el.html(this.createModeTemplate({
+            description: '',
+            time: new Date()
+          }));
           break;
         case 'edit':
           this.marker.setAnimation(google.maps.Animation.BOUNCE);
-          this.$el.html(this.editModeTemplate);
-          this.$('.description').val(this.model.get('description'));
+          this.$el.html(this.editModeTemplate({
+            description: this.model.get('description'),
+            time: this.model.get('time')
+          }));
       }
       this.info.setContent(this.el);
       return this.info.open(this.map, this.marker);
@@ -283,7 +293,7 @@
         this.model.destroy();
         return this.remove();
       },
-      'dblclick .content': function() {
+      'dblclick .show': function() {
         return this.trigger('render', 'edit');
       },
       'click .undo': function() {
