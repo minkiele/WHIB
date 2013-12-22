@@ -16,14 +16,14 @@
     <div class="container">
 	    <div id="gmap"></div>
 	    <hr>
-	    <div class="container row">
-	        <div class="span12">
-	            <p>Export all the places</p>
+	    <h2>Export all the places</h2>
+	    <div class="row">
+	        <div class="col-sm-10">
+	            <textarea class="form-control" id="export-places-json"></textarea>
 	        </div>
-	        <div class="span2">
-	            <button type="button" class="btn btn-primary" id="export-places">Export</button>
+	        <div class="col-sm-2">
+	            <button type="button" class="btn btn-primary btn-block" id="export-places">Export</button>
 	        </div>
-	        <div class="span10"><textarea id="export-places-json"></textarea></div>
 	    </div>
 	    <hr>
 	    <footer>
@@ -32,7 +32,7 @@
             <p>Backend runs over Heroku, NodeJS, Grunt for the build tasks, Bower for the assets, ExpressJS for the webserver, Hogan.js for the mustaches and Consolidate for serving the compiled HTML templates.</p>
             <p><b>2013, Michele Montagner</b></p>
         </footer>
-	</div>
+....</div>
 <script type="text/template" id="edit-mode-template">
     <div class="edit">
         <div class="form-group"><label for="description">Where?</label><input class="description form-control" type="text" name="description" value="<%= description %>" placeholder="What did you do there?"></div>

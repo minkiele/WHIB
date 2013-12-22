@@ -6,6 +6,7 @@ DATE_FORMAT = 'DD/MM/YYYY'
 
 #Main controller
 class window.WHIB
+#Initialize the node and preload the places collection
   constructor: (node) ->
     @node = jQuery(node).get 0
     @places = new WHIB.Places()
@@ -46,7 +47,7 @@ class WHIB.Places extends Backbone.Collection
   stopSync: ->
   	clearInterval @syncTimerId
   
-#View for interaction with collection
+#View for interaction with collection (Interact also with the map)
 class WHIB.MapView extends Backbone.View
   initialize: (options) ->
     if (not options?.position?)
@@ -108,6 +109,8 @@ class WHIB.MapView extends Backbone.View
   promise: ->
     @def.promise()
 
+
+#View to interact with the single markers and the infowindows for the place
 class WHIB.PlaceView extends Backbone.View
   initialize: (options) ->
     @map = options.map
