@@ -27,4 +27,4 @@ require.config
             exports: 'WHIB'
 
 requirejs ['jquery', 'whib', 'bootstrap'], ($, WHIB) ->
-    new WHIB('#gmap').createMapObject().done -> window.whibApp = @
+    window.theWHIB = new WHIB '#gmap'

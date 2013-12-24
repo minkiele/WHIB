@@ -1,5 +1,5 @@
 (function() {
-  var DATE_FORMAT, DEFAULT_DBLCLICK_HACK_TIMEOUT, DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3,
+  var DATE_FORMAT, DEFAULT_DBLCLICK_HACK_TIMEOUT, DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3, _ref4, _ref5,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -14,26 +14,25 @@
   DATE_FORMAT = 'DD/MM/YYYY';
 
   window.WHIB = (function() {
-    function WHIB(node) {
+    function WHIB(node, position, zoom) {
+      if (zoom == null) {
+        zoom = DEFAULT_ZOOM;
+      }
       this.node = jQuery(node).get(0);
       this.places = new WHIB.Places();
       this.places.fetch({
         reset: true
       });
-    }
-
-    WHIB.prototype.createMapObject = function(position, zoom) {
-      if (zoom == null) {
-        zoom = DEFAULT_ZOOM;
-      }
       this.mapView = new WHIB.MapView({
         position: position,
         zoom: zoom,
         el: this.node,
         collection: this.places
       });
-      return this.mapView.promise();
-    };
+      this["export"] = new WHIB.ExportView({
+        collection: this.places
+      });
+    }
 
     return WHIB;
 
@@ -305,6 +304,62 @@
     };
 
     return PlaceView;
+
+  })(Backbone.View);
+
+  WHIB.ExportView = (function(_super) {
+    __extends(ExportView, _super);
+
+    function ExportView() {
+      _ref4 = ExportView.__super__.constructor.apply(this, arguments);
+      return _ref4;
+    }
+
+    ExportView.prototype.initialize = function() {
+      this.loadingBay = this.$el.find('#loading-bay');
+      return this.modal = this.$el.find('.modal');
+    };
+
+    ExportView.prototype.el = '#import-export';
+
+    ExportView.prototype.events = {
+      'click #do-export': function() {
+        return this.loadingBay.val(JSON.stringify(this.collection.toJSON()));
+      },
+      'click #do-import': function() {}
+    };
+
+    return ExportView;
+
+  })(Backbone.View);
+
+  WHIB.ModalView = (function(_super) {
+    __extends(ModalView, _super);
+
+    function ModalView() {
+      _ref5 = ModalView.__super__.constructor.apply(this, arguments);
+      return _ref5;
+    }
+
+    ModalView.prototype.initialize = function(options) {
+      var modal;
+      this.title = options.title != null ? options.title : '';
+      this.body = options.body != null ? options.body : '';
+      modal = jQuery(this.template({
+        title: this.title,
+        body: this.body
+      })).appendTo('body');
+      this.setElement(modal);
+      return this.listenTo('hidden.bs.modal');
+    };
+
+    ModalView.prototype.template = _.template(jQuery('#modal-template').html());
+
+    ModalView.prototype.render = function() {
+      return this.$el.modal();
+    };
+
+    return ModalView;
 
   })(Backbone.View);
 

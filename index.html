@@ -16,14 +16,17 @@
     <div class="container">
 	    <div id="gmap"></div>
 	    <hr>
-	    <h2>Export all the places</h2>
-	    <div class="row">
-	        <div class="col-sm-10">
-	            <textarea class="form-control" id="export-places-json"></textarea>
-	        </div>
-	        <div class="col-sm-2">
-	            <button type="button" class="btn btn-primary btn-block" id="export-places">Export</button>
-	        </div>
+	    <div id="import-export">
+            <h2>Export all the places</h2>
+            <div class="row">
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="loading-bay"></textarea>
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-primary btn-block" id="do-export"><span class="glyphicon glyphicon-share-alt"></span> Export</button>
+                    <button type="button" class="btn btn-danger btn-block" id="do-import"><span class="glyphicon glyphicon-import"></span> Import</button>
+                </div>
+            </div>
 	    </div>
 	    <hr>
 	    <footer>
@@ -52,6 +55,23 @@
         <p class="description"><%= description %></p>
         <p class="time"><%= time %></p>
     </div>
+</script>
+<script type="text/template" id="modal-template">
+<div class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4 class="modal-title"><%= title %></h4>
+</div>
+<div class="modal-body"><%= body %></div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+<button type="button" class="btn btn-primary">Yes</button>
+</div>
+</div>
+</div>
+</div>
 </script>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
 <script>var require = {map: {'whib': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}};</script>

@@ -7,18 +7,18 @@ DATE_FORMAT = 'DD/MM/YYYY'
 #Main controller
 class window.WHIB
 #Initialize the node and preload the places collection
-  constructor: (node) ->
+  constructor: (node, position, zoom = DEFAULT_ZOOM) ->
     @node = jQuery(node).get 0
     @places = new WHIB.Places()
     @places.fetch
       reset: true
-  createMapObject: (position, zoom = DEFAULT_ZOOM) ->
     @mapView = new WHIB.MapView
       position: position
       zoom: zoom
       el: @node
       collection: @places
-    @mapView.promise()
+    @export = new WHIB.ExportView
+      collection: @places
 
 #Model for a single place
 class WHIB.Place extends Backbone.Model
@@ -188,3 +188,28 @@ class WHIB.PlaceView extends Backbone.View
     'dblclick .show': -> @trigger 'render', 'edit'
     'click .undo': ->
       @trigger 'render', 'show'
+
+class WHIB.ExportView extends Backbone.View
+  initialize: ->
+    @loadingBay = @$el.find '#loading-bay'
+    @modal = @$el.find '.modal'
+  el: '#import-export'
+  
+  events:
+    'click #do-export': -> @loadingBay.val JSON.stringify @collection.toJSON()
+    'click #do-import': ->
+
+class WHIB.ModalView extends Backbone.View
+  initialize: (options) ->
+    @title = if options.title? then options.title else ''
+    @body = if options.body? then options.body else ''
+    modal = jQuery(@template
+      title: @title
+      body: @body
+    ).appendTo 'body'
+    @setElement modal
+    @listenTo 'hidden.bs.modal',
+  template: _.template jQuery('#modal-template').html()
+  render: ->
+    @$el.modal()
+    
