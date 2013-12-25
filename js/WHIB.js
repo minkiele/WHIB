@@ -343,6 +343,8 @@
   })(Backbone.View);
 
   WHIB.ModalView = (function(_super) {
+    var _this = this;
+
     __extends(ModalView, _super);
 
     function ModalView() {
@@ -351,15 +353,19 @@
     }
 
     ModalView.prototype.initialize = function(options) {
-      var modal;
-      this.title = options.title != null ? options.title : '';
-      this.body = options.body != null ? options.body : '';
+      var modal,
+        _this = this;
+      this.title = (options != null ? options.title : void 0) != null ? options.title : '';
+      this.body = (options != null ? options.body : void 0) != null ? options.body : '';
       modal = jQuery(this.template({
         title: this.title,
         body: this.body
       })).appendTo('body');
       this.setElement(modal);
-      return this.on('render', this.render);
+      this.on('render', this.render);
+      return this.$el.on('hidden.bs.modal', function() {
+        return _this.trigger('close');
+      });
     };
 
     ModalView.prototype.template = _.template(jQuery('#modal-template').html());
@@ -370,12 +376,12 @@
 
     ModalView.prototype.events = {
       'click .yes': function() {
-        return this.trigger('yes');
+        return ModalView.trigger('yes');
       }
     };
 
     return ModalView;
 
-  })(Backbone.View);
+  }).call(this, Backbone.View);
 
 }).call(this);

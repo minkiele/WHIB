@@ -27,4 +27,5 @@ require.config
             exports: 'WHIB'
 
 requirejs ['jquery', 'whib', 'bootstrap'], ($, WHIB) ->
+    #The I choose a position automatically
     window.theWHIB = new WHIB '#gmap'
