@@ -196,7 +196,9 @@ class WHIB.ExportView extends Backbone.View
       title: 'Import places',
       body: 'Are you sure you really want to import the places?'
     @listenTo @modal, 'yes', =>
-      @collection.reset JSON.parse @loadingBay.val()
+      try
+        json = JSON.parse @loadingBay.val()
+        @collection.reset json
   el: '#import-export'
   events:
     'click #do-export': -> @loadingBay.val JSON.stringify @collection.toJSON()
@@ -216,4 +218,4 @@ class WHIB.ModalView extends Backbone.View
   template: _.template jQuery('#modal-template').html()
   render: -> @$el.modal()
   events:
-    'click .yes': => @trigger 'yes'
+    'click .yes': -> @trigger 'yes'

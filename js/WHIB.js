@@ -323,7 +323,11 @@
         body: 'Are you sure you really want to import the places?'
       });
       return this.listenTo(this.modal, 'yes', function() {
-        return _this.collection.reset(JSON.parse(_this.loadingBay.val()));
+        var json;
+        try {
+          json = JSON.parse(_this.loadingBay.val());
+          return _this.collection.reset(json);
+        } catch (_error) {}
       });
     };
 
@@ -343,8 +347,6 @@
   })(Backbone.View);
 
   WHIB.ModalView = (function(_super) {
-    var _this = this;
-
     __extends(ModalView, _super);
 
     function ModalView() {
@@ -376,12 +378,12 @@
 
     ModalView.prototype.events = {
       'click .yes': function() {
-        return ModalView.trigger('yes');
+        return this.trigger('yes');
       }
     };
 
     return ModalView;
 
-  }).call(this, Backbone.View);
+  })(Backbone.View);
 
 }).call(this);
