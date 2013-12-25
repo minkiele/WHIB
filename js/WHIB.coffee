@@ -197,8 +197,8 @@ class WHIB.ModalView extends Backbone.View
     ).appendTo 'body'
     @setElement modal
     @on 'render', @render
+    @listenTo @$el, 'hidden.bs.modal', => @trigger 'close'
   template: _.template jQuery('#modal-template').html()
   render: -> @$el.modal()
   events:
     'click .yes': -> @trigger 'yes'
-    

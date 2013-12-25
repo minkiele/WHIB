@@ -313,7 +313,8 @@
     }
 
     ModalView.prototype.initialize = function(options) {
-      var modal;
+      var modal,
+        _this = this;
       this.title = options.title != null ? options.title : '';
       this.body = options.body != null ? options.body : '';
       modal = jQuery(this.template({
@@ -321,7 +322,10 @@
         body: this.body
       })).appendTo('body');
       this.setElement(modal);
-      return this.on('render', this.render);
+      this.on('render', this.render);
+      return this.listenTo(this.$el, 'hidden.bs.modal', function() {
+        return _this.trigger('close');
+      });
     };
 
     ModalView.prototype.template = _.template(jQuery('#modal-template').html());
