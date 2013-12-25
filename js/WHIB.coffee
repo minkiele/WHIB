@@ -189,16 +189,16 @@ class WHIB.PlaceView extends Backbone.View
 
 class WHIB.ModalView extends Backbone.View
   initialize: (options) ->
-    @title = if options.title? then options.title else ''
-    @body = if options.body? then options.body else ''
+    @title = if options?.title? then options.title else ''
+    @body = if options?.body? then options.body else ''
     modal = jQuery(@template
       title: @title
       body: @body
     ).appendTo 'body'
     @setElement modal
     @on 'render', @render
-    @listenTo @$el, 'hidden.bs.modal', => @trigger 'close'
+    @$el.on 'hidden.bs.modal', => @trigger 'close'
   template: _.template jQuery('#modal-template').html()
   render: -> @$el.modal()
   events:
-    'click .yes': -> @trigger 'yes'
+    'click .yes': => @trigger 'yes'
