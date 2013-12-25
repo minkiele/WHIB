@@ -192,12 +192,15 @@ class WHIB.PlaceView extends Backbone.View
 class WHIB.ExportView extends Backbone.View
   initialize: ->
     @loadingBay = @$el.find '#loading-bay'
-    @modal = @$el.find '.modal'
+    @modal = new WHIB.ModalView
+      title: 'Import places',
+      body: 'Are you sure you really want to import the places?'
+    @listenTo @modal, 'yes', =>
+      @collection.reset JSON.parse @loadingBay.val()
   el: '#import-export'
-  
   events:
     'click #do-export': -> @loadingBay.val JSON.stringify @collection.toJSON()
-    'click #do-import': ->
+    'click #do-import': -> @modal.trigger 'render'
 
 class WHIB.ModalView extends Backbone.View
   initialize: (options) ->
@@ -208,8 +211,9 @@ class WHIB.ModalView extends Backbone.View
       body: @body
     ).appendTo 'body'
     @setElement modal
-    @listenTo 'hidden.bs.modal',
+    @on 'render', @render
   template: _.template jQuery('#modal-template').html()
-  render: ->
-    @$el.modal()
+  render: -> @$el.modal()
+  events:
+    'click .yes': -> @trigger 'yes'
     

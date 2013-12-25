@@ -316,8 +316,15 @@
     }
 
     ExportView.prototype.initialize = function() {
+      var _this = this;
       this.loadingBay = this.$el.find('#loading-bay');
-      return this.modal = this.$el.find('.modal');
+      this.modal = new WHIB.ModalView({
+        title: 'Import places',
+        body: 'Are you sure you really want to import the places?'
+      });
+      return this.listenTo(this.modal, 'yes', function() {
+        return _this.collection.reset(JSON.parse(_this.loadingBay.val()));
+      });
     };
 
     ExportView.prototype.el = '#import-export';
@@ -326,7 +333,9 @@
       'click #do-export': function() {
         return this.loadingBay.val(JSON.stringify(this.collection.toJSON()));
       },
-      'click #do-import': function() {}
+      'click #do-import': function() {
+        return this.modal.trigger('render');
+      }
     };
 
     return ExportView;
@@ -350,13 +359,19 @@
         body: this.body
       })).appendTo('body');
       this.setElement(modal);
-      return this.listenTo('hidden.bs.modal');
+      return this.on('render', this.render);
     };
 
     ModalView.prototype.template = _.template(jQuery('#modal-template').html());
 
     ModalView.prototype.render = function() {
       return this.$el.modal();
+    };
+
+    ModalView.prototype.events = {
+      'click .yes': function() {
+        return this.trigger('yes');
+      }
     };
 
     return ModalView;
