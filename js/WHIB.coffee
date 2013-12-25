@@ -6,18 +6,17 @@ DATE_FORMAT = 'DD/MM/YYYY'
 
 #Main controller
 class window.WHIB
-  constructor: (node) ->
+#Initialize the node and preload the places collection
+  constructor: (node, position, zoom = DEFAULT_ZOOM) ->
     @node = jQuery(node).get 0
     @places = new WHIB.Places()
     @places.fetch
       reset: true
-  createMapObject: (position, zoom = DEFAULT_ZOOM) ->
     @mapView = new WHIB.MapView
       position: position
       zoom: zoom
       el: @node
       collection: @places
-    @mapView.promise()
 
 #Model for a single place
 class WHIB.Place extends Backbone.Model
@@ -46,7 +45,7 @@ class WHIB.Places extends Backbone.Collection
   stopSync: ->
   	clearInterval @syncTimerId
   
-#View for interaction with collection
+#View for interaction with collection (Interact also with the map)
 class WHIB.MapView extends Backbone.View
   initialize: (options) ->
     if (not options?.position?)
@@ -108,6 +107,8 @@ class WHIB.MapView extends Backbone.View
   promise: ->
     @def.promise()
 
+
+#View to interact with the single markers and the infowindows for the place
 class WHIB.PlaceView extends Backbone.View
   initialize: (options) ->
     @map = options.map
@@ -185,3 +186,19 @@ class WHIB.PlaceView extends Backbone.View
     'dblclick .show': -> @trigger 'render', 'edit'
     'click .undo': ->
       @trigger 'render', 'show'
+
+class WHIB.ModalView extends Backbone.View
+  initialize: (options) ->
+    @title = if options.title? then options.title else ''
+    @body = if options.body? then options.body else ''
+    modal = jQuery(@template
+      title: @title
+      body: @body
+    ).appendTo 'body'
+    @setElement modal
+    @on 'render', @render
+  template: _.template jQuery('#modal-template').html()
+  render: -> @$el.modal()
+  events:
+    'click .yes': -> @trigger 'yes'
+    

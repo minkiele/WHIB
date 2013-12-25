@@ -1,5 +1,5 @@
 (function() {
-  var DATE_FORMAT, DEFAULT_DBLCLICK_HACK_TIMEOUT, DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3,
+  var DATE_FORMAT, DEFAULT_DBLCLICK_HACK_TIMEOUT, DEFAULT_POSITION, DEFAULT_SYNC_TIME, DEFAULT_ZOOM, _ref, _ref1, _ref2, _ref3, _ref4,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -14,26 +14,22 @@
   DATE_FORMAT = 'DD/MM/YYYY';
 
   window.WHIB = (function() {
-    function WHIB(node) {
+    function WHIB(node, position, zoom) {
+      if (zoom == null) {
+        zoom = DEFAULT_ZOOM;
+      }
       this.node = jQuery(node).get(0);
       this.places = new WHIB.Places();
       this.places.fetch({
         reset: true
       });
-    }
-
-    WHIB.prototype.createMapObject = function(position, zoom) {
-      if (zoom == null) {
-        zoom = DEFAULT_ZOOM;
-      }
       this.mapView = new WHIB.MapView({
         position: position,
         zoom: zoom,
         el: this.node,
         collection: this.places
       });
-      return this.mapView.promise();
-    };
+    }
 
     return WHIB;
 
@@ -305,6 +301,42 @@
     };
 
     return PlaceView;
+
+  })(Backbone.View);
+
+  WHIB.ModalView = (function(_super) {
+    __extends(ModalView, _super);
+
+    function ModalView() {
+      _ref4 = ModalView.__super__.constructor.apply(this, arguments);
+      return _ref4;
+    }
+
+    ModalView.prototype.initialize = function(options) {
+      var modal;
+      this.title = options.title != null ? options.title : '';
+      this.body = options.body != null ? options.body : '';
+      modal = jQuery(this.template({
+        title: this.title,
+        body: this.body
+      })).appendTo('body');
+      this.setElement(modal);
+      return this.on('render', this.render);
+    };
+
+    ModalView.prototype.template = _.template(jQuery('#modal-template').html());
+
+    ModalView.prototype.render = function() {
+      return this.$el.modal();
+    };
+
+    ModalView.prototype.events = {
+      'click .yes': function() {
+        return this.trigger('yes');
+      }
+    };
+
+    return ModalView;
 
   })(Backbone.View);
 

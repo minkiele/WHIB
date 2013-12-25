@@ -34,9 +34,7 @@
   });
 
   requirejs(['jquery', 'whib', 'bootstrap'], function($, WHIB) {
-    return new WHIB('#gmap').createMapObject().done(function() {
-      return window.whibApp = this;
-    });
+    return window.theWHIB = new WHIB('#gmap');
   });
 
 }).call(this);
