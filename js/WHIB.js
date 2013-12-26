@@ -78,6 +78,19 @@
 
     Places.prototype.localStorage = new Backbone.LocalStorage('WHIB');
 
+    Places.prototype.comparator = function(aPlace, bPlace) {
+      var aMoment, bMoment;
+      aMoment = moment(aPlace.time);
+      bMoment = moment(bPlace.time);
+      if (aMoment.isBefore(bMoment)) {
+        return -1;
+      } else if (aMoment.isSame(bMoment)) {
+        return 0;
+      } else {
+        return 1;
+      }
+    };
+
     Places.prototype.getLatLngBounds = function() {
       var bounds;
       bounds = new google.maps.LatLngBounds();
@@ -85,18 +98,6 @@
         return bounds.extend(model.getLatLng());
       });
       return bounds;
-    };
-
-    Places.prototype.startSync = function() {
-      var _this = this;
-      this.stopSync();
-      return this.syncTimerId = setInterval(function() {
-        return _this.sync();
-      }, DEFAULT_SYNC_TIME);
-    };
-
-    Places.prototype.stopSync = function() {
-      return clearInterval(this.syncTimerId);
     };
 
     return Places;
