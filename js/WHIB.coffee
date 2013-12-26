@@ -34,18 +34,15 @@ class WHIB.Place extends Backbone.Model
 class WHIB.Places extends Backbone.Collection
   model: WHIB.Place
   localStorage: new Backbone.LocalStorage 'WHIB'
+  comparator: (aPlace, bPlace) ->
+    aMoment = moment aPlace.time
+    bMoment = moment bPlace.time
+    if aMoment.isBefore(bMoment) then -1 else if aMoment.isSame(bMoment) then 0 else 1
   getLatLngBounds: ->
     bounds = new google.maps.LatLngBounds()
     @each (model) ->
       bounds.extend model.getLatLng()
     bounds
-  startSync: ->
-    @stopSync()
-    @syncTimerId = setInterval =>
-      @sync()
-    ,DEFAULT_SYNC_TIME
-  stopSync: ->
-  	clearInterval @syncTimerId
   
 #View for interaction with collection (Interact also with the map)
 class WHIB.MapView extends Backbone.View
