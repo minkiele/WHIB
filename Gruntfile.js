@@ -58,7 +58,7 @@ module.exports = function(grunt) {
       },
       coffee: {
         files: ['js/**/*.coffee'],
-        tasks: ['coffee:all']
+        tasks: ['coffee:allDev']
       }
     }
   });
