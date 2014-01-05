@@ -3,6 +3,10 @@ module.exports = function(grunt) {
   grunt.initConfig({
     less: {
       allDev: {
+        options: {
+          sourceMap: true,
+          sourceMapBasepath: 'css/'
+        },
     	expand: true,
     	cwd: 'css/',
     	src: ['**/*.less'],
@@ -27,7 +31,10 @@ module.exports = function(grunt) {
     	cwd: 'js/',
     	src: ['**/*.coffee'],
     	dest: 'js/',
-    	ext: '.js'
+    	ext: '.js',
+        options: {
+          sourceMap: true
+        }
       },
       allProd: {
     	expand: true,
@@ -58,7 +65,7 @@ module.exports = function(grunt) {
       },
       coffee: {
         files: ['js/**/*.coffee'],
-        tasks: ['coffee:all']
+        tasks: ['coffee:allDev']
       }
     }
   });
