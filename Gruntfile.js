@@ -33,7 +33,8 @@ module.exports = function(grunt) {
     	dest: 'js/',
     	ext: '.js',
         options: {
-          sourceMap: true
+          sourceMap: true,
+          bare: true
         }
       },
       allProd: {
@@ -41,7 +42,10 @@ module.exports = function(grunt) {
     	cwd: 'js/',
     	src: ['**/*.coffee'],
     	dest: 'js/',
-    	ext: '.tmp.js'
+    	ext: '.tmp.js',
+        options: {
+          bare: true
+        }
       }
     },
     uglify: {

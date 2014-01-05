@@ -22,9 +22,6 @@ require.config
         underscore:
             exports: '_'
         bootstrap: ['jquery']
-        whib:
-            deps: ['jquery', 'backbone', 'localstorage', 'gmaps', 'moment'],
-            exports: 'WHIB'
 
 requirejs ['jquery', 'whib', 'bootstrap'], ($, WHIB) ->
     #The I choose a position automatically
