@@ -15,8 +15,10 @@ module.exports = function(grunt) {
     	src: ['**/*.less'],
     	dest: 'css/',
     	ext: '.css',
-        compress: true,
-        cleancss: true
+        options: {
+          compress: true,
+          cleancss: true
+        }
       }
     },
     coffee: {

@@ -16,4 +16,5 @@ node_modules
 
 bower_components
 
+css/*.css
 js/*.js
