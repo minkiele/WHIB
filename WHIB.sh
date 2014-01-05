@@ -11,8 +11,13 @@ do_export(){
   export GMAPS_KEY=$(heroku config:get GMAPS_KEY)
 }
 
+do_install(){
+  ./node_modules/.bin/grunt prod
+  ./node_modules/.bin/bower install
+}
+
 usage_infos(){
-  echo 'Usage: WHIB.sh [login|logout|export|foreman|grunt]'
+  echo 'Usage: WHIB.sh [login|logout|export|foreman|grunt|install]'
 }
 
 if [ $# -eq 1 ]; then
@@ -22,6 +27,7 @@ if [ $# -eq 1 ]; then
     export) do_export;;
     foreman) do_export; foreman start;;
     grunt) grunt watch;;
+    install) do_install;;
     *) usage_infos;;
   esac
 else
