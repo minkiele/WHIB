@@ -24,10 +24,10 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
     getLatLng: ->
       new google.maps.LatLng @get('lat'), @get 'lng'
     validate: (attrs) ->
-      if (not attrs.lat?) then 'Missing lat'
-      if (not attrs.lng?) then 'Missing lng'
-      if (not attrs.description?) or attrs.description.length is 0 then 'Missing description'
-      if (not attrs.time?) then 'Missing time'
+      if (not attrs.lat?) then return 'Missing lat'
+      if (not attrs.lng?) then return 'Missing lng'
+      if (not attrs.description?) or attrs.description.length is 0 then return 'Missing description'
+      if (not attrs.time?) then return 'Missing time'
   
   #Model for a collection of places
   class WHIB.Places extends Backbone.Collection
@@ -205,14 +205,18 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         @model.set 'description', @$('.description').val()
         @model.set 'time', moment(@$('.time').val(), DATE_FORMAT).toDate()
         if @model.isValid()
-          @model.save()
-          @trigger 'render', 'show'
+          @model.save {},
+            success: =>
+              @trigger 'render', 'show'
       'click .delete': ->
         @model.destroy()
         @remove()
       'dblclick .show': -> @trigger 'render', 'edit'
       'click .undo': ->
-        @trigger 'render', 'show'
+        if not @model.isValid()
+          @model.fetch
+            success: =>
+              @trigger 'render', 'show'
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
