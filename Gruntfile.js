@@ -41,21 +41,15 @@ module.exports = function(grunt) {
     	cwd: 'js/',
     	src: ['**/*.coffee'],
     	dest: 'js/',
-    	ext: '.tmp.js'
-      }
-    },
-    uglify: {
-      allProd: {
-    	expand: true,
-    	cwd: 'js/',
-    	src: ['**/*.tmp.js'],
-    	dest: 'js/',
     	ext: '.js'
       }
     },
-    clean: {
-      allProd: {
-        src: ['js/**/*.tmp.js']
+    requirejs: {
+      dev: {
+        options: (function(opts){ opts.optimize = 'none'; return opts; })(grunt.file.readJSON('r.js.json'))
+      },
+      prod: {
+        options: grunt.file.readJSON('r.js.json')
       }
     },
     watch: {
@@ -73,11 +67,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
 
   // Default task(s).
   grunt.registerTask('default', ['less:allDev', 'coffee:allDev']);
-  grunt.registerTask('prod', ['less:allProd', 'coffee:allProd', 'uglify:allProd', 'clean:allProd']);
+  grunt.registerTask('prod', ['less:allProd', 'coffee:allProd', 'requirejs:prod']);
 
 };

@@ -1,4 +1,4 @@
-define ['jquery', 'backbone', 'moment', 'localstorage', 'gmaps'], (jQuery, Backbone, moment) ->
+define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment) ->
   DEFAULT_ZOOM = 1
   DEFAULT_POSITION = new google.maps.LatLng(0, 0)
   DEFAULT_SYNC_TIME = 500

@@ -13,7 +13,6 @@ require.config
         backbone: 'bower_components/backbone/backbone'
         localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage'
         async: 'bower_components/requirejs-plugins/src/async'
-        whib: 'js/WHIB'
         moment: 'bower_components/momentjs/min/moment.min'
     shim:
         backbone:
@@ -23,6 +22,6 @@ require.config
             exports: '_'
         bootstrap: ['jquery']
 
-requirejs ['jquery', 'whib', 'bootstrap'], ($, WHIB) ->
+require ['js/WHIB'], (WHIB) ->
     #The I choose a position automatically
     window.theWHIB = new WHIB '#gmap'
