@@ -231,3 +231,4 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
       'click .yes': => @trigger 'yes'
 
   WHIB
+  
