@@ -12,8 +12,8 @@ do_export(){
 }
 
 do_install(){
-  ./node_modules/.bin/grunt prod
   ./node_modules/.bin/bower install
+  ./node_modules/.bin/grunt prod
 }
 
 usage_infos(){
