@@ -45,9 +45,6 @@ module.exports = function(grunt) {
       }
     },
     requirejs: {
-      dev: {
-        options: (function(opts){ opts.optimize = 'none'; return opts; })(grunt.file.readJSON('r.js.json'))
-      },
       prod: {
         options: grunt.file.readJSON('r.js.json')
       }
