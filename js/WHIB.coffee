@@ -46,24 +46,30 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
   #Class with static methods (like reverse geocoder)
   class WHIB.Services
     #Wrapper for jQuery.Deferred to resolve reverse geocoding
-    @ReverseGeocoding = (latLng) ->
+    @Geocoder = (request) ->
       jQuery.Deferred (def) ->
         geocoder = new google.maps.Geocoder()
-        geocoder.geocode
-          location: latLng
-        , (result, status) ->
+        geocoder.geocode request, (result, status) ->
           if status is google.maps.GeocoderStatus.OK
             def.resolve result
           else
             def.reject status
       .promise()
     @AddressFinder = (latLng) ->
-      @ReverseGeocoding(latLng).then (entries) ->
+      @Geocoder
+        location: latLng
+      .then (entries) ->
         if entries?.length?
           for entry in entries
             for component in entry.address_components
               if jQuery.inArray('locality', component.types) > -1
                 return component.short_name
+          entries[0].formatted_address
+    @Geocode = (address) ->
+      @Geocoder
+        address: address
+      .then (entries) ->
+        if entries?.length? then entries[0].geometry.location
         
   #View for interaction with collection (Interact also with the map)
   class WHIB.MapView extends Backbone.View
