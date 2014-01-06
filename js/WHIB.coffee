@@ -201,4 +201,19 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
     events:
       'click .yes': => @trigger 'yes'
 
+  class WHIB.ExportView extends Backbone.View
+  initialize: ->
+    @loadingBay = @$el.find '#loading-bay'
+    @modal = new WHIB.ModalView
+      title: 'Import places',
+      body: 'Are you sure you really want to import the places?'
+    @listenTo @modal, 'yes', =>
+      try
+        json = JSON.parse @loadingBay.val()
+        @collection.reset json
+  el: '#import-export'
+  events:
+    'click #do-export': -> @loadingBay.val JSON.stringify @collection.toJSON()
+    'click #do-import': -> @modal.trigger 'render'
+
   WHIB
