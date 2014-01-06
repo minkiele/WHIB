@@ -21,6 +21,9 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
   
   #Model for a single place
   class WHIB.Place extends Backbone.Model
+    initialize: (opts) ->
+      if @isNew() then WHIB.AddressFinder(@getLatLng()).done (address) ->
+        console.log address
     getLatLng: ->
       new google.maps.LatLng @get('lat'), @get 'lng'
     validate: (attrs) ->
@@ -43,17 +46,19 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         bounds.extend model.getLatLng()
       bounds
 
-  class WHIB.AddressFinder extends jQuery.Deferred
-    geocoder: new google.maps.Geocoder()
-    constructor: (latLng) ->
-      @geocoder.geocode
+  #Wrapper for jQuery.Deferred to resolve reverse geocoding
+  WHIB.AddressFinder = (latLng) ->
+    jQuery.Deferred (def) ->
+      geocoder = new google.maps.Geocoder()
+      geocoder.geocode
         location: latLng
-      , (result, status) =>
+      , (result, status) ->
         if status is google.maps.GeocoderStatus.OK
-          @resolve result
+          def.resolve result
         else
-          @reject status
-      
+          def.reject status
+    .promise()
+        
   #View for interaction with collection (Interact also with the map)
   class WHIB.MapView extends Backbone.View
     initialize: (options) ->
