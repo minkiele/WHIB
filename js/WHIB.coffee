@@ -42,16 +42,27 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
       @each (model) ->
         bounds.extend model.getLatLng()
       bounds
-    
+
+  class WHIB.AddressFinder extends jQuery.Deferred
+    geocoder: new google.maps.Geocoder()
+    constructor: (latLng) ->
+      @geocoder.geocode
+        location: latLng
+      , (result, status) =>
+        if status is google.maps.GeocoderStatus.OK
+          @resolve result
+        else
+          @reject status
+      
   #View for interaction with collection (Interact also with the map)
   class WHIB.MapView extends Backbone.View
     initialize: (options) ->
       if (not options?.position?)
         position = if @collection.size() > 0 then @collection.getLatLngBounds().getCenter() else DEFAULT_POSITION
       else position = options.position
-      @def = new jQuery.Deferred()
+      def = new jQuery.Deferred()
       if @map?
-        @def.resolveWith @
+        def.resolveWith @
       else
         @map = new google.maps.Map @el,
           center: position
@@ -64,11 +75,11 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         if not @map? then def.rejectWith @
         else
           google.maps.event.addListenerOnce @map, 'idle', =>
-            @def.resolveWith @
+            def.resolveWith @
   
-      @def.done @addMapListener
-      @def.done @populateMap
-      @def.done @fitBounds
+      def.done @addMapListener
+      def.done @populateMap
+      def.done @fitBounds
       
     addMapListener: ->
     
@@ -101,10 +112,6 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         model: place
         collection: @collection
         map: @map
-  
-    promise: ->
-      @def.promise()
-  
   
   #View to interact with the single markers and the infowindows for the place
   class WHIB.PlaceView extends Backbone.View
