@@ -20,14 +20,14 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         collection: @places
   
   #Model for a single place
-  class WHIB.Place extends Backbone.Model
+  class WHIB.Place extends Backbone.Model    
     getLatLng: ->
       new google.maps.LatLng @get('lat'), @get 'lng'
     validate: (attrs) ->
-      if (not attrs.lat?) then 'Missing lat'
-      if (not attrs.lng?) then 'Missing lng'
-      if (not attrs.description?) or attrs.description.length is 0 then 'Missing description'
-      if (not attrs.time?) then 'Missing time'
+      if (not attrs.lat?) then return 'Missing lat'
+      if (not attrs.lng?) then return 'Missing lng'
+      if (not attrs.description?) or attrs.description.length is 0 then return 'Missing description'
+      if (not attrs.time?) then return 'Missing time'
   
   #Model for a collection of places
   class WHIB.Places extends Backbone.Collection
@@ -43,17 +43,34 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         bounds.extend model.getLatLng()
       bounds
 
-  class WHIB.AddressFinder extends jQuery.Deferred
-    geocoder: new google.maps.Geocoder()
-    constructor: (latLng) ->
-      @geocoder.geocode
+  #Class with static methods (like reverse geocoder)
+  class WHIB.Services
+    #Wrapper for jQuery.Deferred to resolve reverse geocoding
+    @Geocoder = (request) ->
+      jQuery.Deferred (def) ->
+        geocoder = new google.maps.Geocoder()
+        geocoder.geocode request, (result, status) ->
+          if status is google.maps.GeocoderStatus.OK
+            def.resolve result
+          else
+            def.reject status
+      .promise()
+    @AddressFinder = (latLng) ->
+      @Geocoder
         location: latLng
-      , (result, status) =>
-        if status is google.maps.GeocoderStatus.OK
-          @resolve result
-        else
-          @reject status
-      
+      .then (entries) ->
+        if entries?.length?
+          for entry in entries
+            for component in entry.address_components
+              if jQuery.inArray('locality', component.types) > -1
+                return component.short_name
+          entries[0].formatted_address
+    @Geocode = (address) ->
+      @Geocoder
+        address: address
+      .then (entries) ->
+        if entries?.length? then entries[0].geometry.location
+        
   #View for interaction with collection (Interact also with the map)
   class WHIB.MapView extends Backbone.View
     initialize: (options) ->
@@ -115,6 +132,10 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
   
   #View to interact with the single markers and the infowindows for the place
   class WHIB.PlaceView extends Backbone.View
+    
+    placeholder: 'What did you do here?'
+    status: 'show'
+    
     initialize: (options) ->
       @map = options.map
   
@@ -131,8 +152,6 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
           lng: position.lng()
         @model.save()
   
-      @status = 'show'
-  
       @marker.addListener 'click', => @render()
   
       @marker.addListener 'dblclick', ->
@@ -148,9 +167,11 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
       @on 'render', (status) =>
         @status = status
         @render()
-  
-      if @model.isNew() then @trigger 'render', 'create'
-  
+
+      if @model.isNew() then WHIB.Services.AddressFinder(@model.getLatLng()).done (address) =>
+        if address? then @placeholder = address
+      .always => @trigger 'render', 'create'
+
     info: new google.maps.InfoWindow()
   
     createModeTemplate: _.template jQuery('#create-mode-template').html()
@@ -169,6 +190,7 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
           @$el.html @createModeTemplate
             description: ''
             time: moment().format DATE_FORMAT
+            placeholder: @placeholder
         when 'edit'
           @marker.setAnimation google.maps.Animation.BOUNCE
           @$el.html @editModeTemplate
@@ -183,14 +205,18 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         @model.set 'description', @$('.description').val()
         @model.set 'time', moment(@$('.time').val(), DATE_FORMAT).toDate()
         if @model.isValid()
-          @model.save()
-          @trigger 'render', 'show'
+          @model.save {},
+            success: =>
+              @trigger 'render', 'show'
       'click .delete': ->
         @model.destroy()
         @remove()
       'dblclick .show': -> @trigger 'render', 'edit'
       'click .undo': ->
-        @trigger 'render', 'show'
+        if not @model.isValid()
+          @model.fetch
+            success: =>
+              @trigger 'render', 'show'
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
