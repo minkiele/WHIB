@@ -14,6 +14,7 @@ require.config
     localstorage: 'bower_components/Backbone.localStorage/backbone.localStorage'
     async: 'bower_components/requirejs-plugins/src/async'
     moment: 'bower_components/momentjs/min/moment.min'
+    store: 'bower_components/store.js/store.min'
   shim:
     backbone:
       deps: ['underscore', 'jquery']
