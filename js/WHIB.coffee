@@ -1,4 +1,4 @@
-define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment) ->
+define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store) ->
   DEFAULT_ZOOM = 1
   DEFAULT_POSITION = new google.maps.LatLng(0, 0)
   DEFAULT_SYNC_TIME = 500
@@ -73,6 +73,12 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         
   #View for interaction with collection (Interact also with the map)
   class WHIB.MapView extends Backbone.View
+    
+    if store.enabled then mapTypeId = store.get 'mapTypeId'
+    if not mapTypeId? then mapTypeId = google.maps.MapTypeId.SATELLITE
+    
+    mapTypeId: mapTypeId
+    
     initialize: (options) ->
       if (not options?.position?)
         position = if @collection.size() > 0 then @collection.getLatLngBounds().getCenter() else DEFAULT_POSITION
@@ -87,8 +93,10 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
           scaleControl: no
           scrollwheel: no
           panControl: no
-          mapTypeControl: no
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+          mapTypeControl: yes
+          mapTypeControlOptions:
+            mapTypeIds: (google.maps.MapTypeId[mapType] for mapType in ['ROADMAP', 'HYBRID', 'SATELLITE'])
+          mapTypeId: @mapTypeId
         if not @map? then def.rejectWith @
         else
           google.maps.event.addListenerOnce @map, 'idle', =>
@@ -97,7 +105,8 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
       def.done @addMapListener
       def.done @populateMap
       def.done @fitBounds
-      
+      def.done @addPersistence
+    
     addMapListener: ->
     
       dblclickHackTimerId = 0
@@ -123,7 +132,13 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
     fitBounds: ->
       if @collection.size() > 0
         @map.fitBounds @collection.getLatLngBounds()
-  
+    
+    addPersistence: ->
+      if store.enabled
+        @map.addListener 'maptypeid_changed', =>
+          @mapTypeId = @map.getMapTypeId()
+          store.set 'mapTypeId', @mapTypeId
+    
     createViewFor: (place) ->
       new WHIB.PlaceView
         model: place
