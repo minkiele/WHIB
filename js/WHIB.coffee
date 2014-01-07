@@ -169,7 +169,7 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         @render()
 
       if @model.isNew() then WHIB.Services.AddressFinder(@model.getLatLng()).done (address) =>
-        if address? then @placeholder = address
+        if address? then @placeholder = "#{address}?"
       .always => @trigger 'render', 'create'
 
     info: new google.maps.InfoWindow()
@@ -215,8 +215,8 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
       'click .undo': ->
         if not @model.isValid()
           @model.fetch
-            success: =>
-              @trigger 'render', 'show'
+            success: => @trigger 'render', 'show'
+        else @trigger 'render', 'show'
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
