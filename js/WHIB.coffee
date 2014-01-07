@@ -87,8 +87,10 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
           scaleControl: no
           scrollwheel: no
           panControl: no
-          mapTypeControl: no
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+          mapTypeControl: yes
+          mapTypeControlOptions:
+            mapTypeIds: (google.maps.MapTypeId[mapType] for mapType in ['ROADMAP', 'HYBRID', 'SATELLITE'])
+          mapTypeId: google.maps.MapTypeId.SATELLITE
         if not @map? then def.rejectWith @
         else
           google.maps.event.addListenerOnce @map, 'idle', =>
@@ -169,7 +171,7 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
         @render()
 
       if @model.isNew() then WHIB.Services.AddressFinder(@model.getLatLng()).done (address) =>
-        if address? then @placeholder = address
+        if address? then @placeholder = "#{address}?"
       .always => @trigger 'render', 'create'
 
     info: new google.maps.InfoWindow()
@@ -215,8 +217,8 @@ define ['jquery', 'backbone', 'moment', 'localstorage', 'async', 'gmaps'], (jQue
       'click .undo': ->
         if not @model.isValid()
           @model.fetch
-            success: =>
-              @trigger 'render', 'show'
+            success: => @trigger 'render', 'show'
+        else @trigger 'render', 'show'
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
