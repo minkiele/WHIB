@@ -18,6 +18,9 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
         zoom: zoom
         el: @node
         collection: @places
+      @export = new WHIB.ExportView
+        collection: @places
+
   
   #Model for a single place
   class WHIB.Place extends Backbone.Model    
@@ -250,18 +253,18 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
       'click .yes': => @trigger 'yes'
 
   class WHIB.ExportView extends Backbone.View
-  initialize: ->
-    @loadingBay = @$el.find '#loading-bay'
-    @modal = new WHIB.ModalView
-      title: 'Import places',
-      body: 'Are you sure you really want to import the places?'
-    @listenTo @modal, 'yes', =>
-      try
-        json = JSON.parse @loadingBay.val()
-        @collection.reset json
-  el: '#import-export'
-  events:
-    'click #do-export': -> @loadingBay.val JSON.stringify @collection.toJSON()
-    'click #do-import': -> @modal.trigger 'render'
+    initialize: ->
+      @loadingBay = @$el.find '#loading-bay'
+      @modal = new WHIB.ModalView
+        title: 'Import places',
+        body: 'Are you sure you really want to import the places?'
+      @listenTo @modal, 'yes', =>
+        try
+          json = JSON.parse @loadingBay.val()
+          @collection.reset json
+    el: '#import-export'
+    events:
+      'click #do-export': -> @loadingBay.val JSON.stringify @collection.toJSON()
+      'click #do-import': -> @modal.trigger 'render'
 
   WHIB
