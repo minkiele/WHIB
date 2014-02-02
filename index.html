@@ -4,6 +4,7 @@
 <title>WHIB: Where Have I Been?</title>
 <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 <link type="text/css" rel="stylesheet" href="css/WHIB.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <header class="container">
@@ -13,7 +14,11 @@
       </div>
     </header>
     <div class="container">
+        <h2>The Map</h2>
         <div id="gmap"></div>
+        <hr>
+        <h2>The Timeline</h2>
+        <div id="timeline"></div>
         <hr>
         <footer>
             <p>I wanted to learn something new so one saturday morning I sat at my desk and thought of this simple application. It took me a while but at last I could make it.</p>
@@ -37,27 +42,35 @@
     </div>
 </script>
 <script type="text/template" id="show-mode-template">
-    <div class="show">
-        <p class="description"><%= description %></p>
-        <p class="time"><%= time %></p>
-    </div>
+  <div class="show">
+    <p class="description"><%= description %></p>
+    <p class="time"><%= time %></p>
+  </div>
 </script>
 <script type="text/template" id="modal-template">
 <div class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title"><%= title %></h4>
-            </div>
-            <div class="modal-body"><%= body %></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default no" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary yes" data-dismiss="modal">Yes</button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= title %></h4>
+      </div>
+      <div class="modal-body"><%= body %></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default no" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary yes" data-dismiss="modal">Yes</button>
+      </div>
     </div>
+  </div>
 </div>
+</script>
+<script type="text/template" id="timeline-box-template">
+  <div class="timeline-box col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="panel panel-default">
+      <div class="panel-heading"><div class="description"><%= description %></div></div>
+      <div class="panel-body"><div class="time"><%= time %></div></div>
+    </div>
+  </div>
 </script>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
 <script>var require = {map: {'js/WHIB': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}};</script>

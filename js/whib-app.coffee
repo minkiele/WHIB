@@ -25,4 +25,4 @@ require.config
 
 require ['js/WHIB'], (WHIB) ->
   #The I choose a position automatically
-  window.theWHIB = new WHIB '#gmap'
+  window.theWHIB = new WHIB()

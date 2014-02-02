@@ -8,8 +8,9 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
   #Main controller
   class WHIB
   #Initialize the node and preload the places collection
-    constructor: (node, position, zoom = DEFAULT_ZOOM) ->
-      @node = jQuery(node).get 0
+    constructor: (position, zoom = DEFAULT_ZOOM) ->
+      @node = jQuery('#gmap').get 0
+      @timeline = jQuery('#timeline').get 0
       @places = new WHIB.Places()
       @places.fetch
         reset: true
@@ -17,6 +18,9 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
         position: position
         zoom: zoom
         el: @node
+        collection: @places
+      @timelineView = new WHIB.TimelineView
+        el: @timeline
         collection: @places
   
   #Model for a single place
@@ -233,6 +237,24 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
             success: => @trigger 'render', 'show'
         else @trigger 'render', 'show'
   
+  class WHIB.TimelineView extends Backbone.View
+    initialize: -> @render()
+    
+    render: ->
+      @collection.each (model) =>
+        view = new WHIB.TimelineBoxView
+          model: model
+        
+        @$el.append view.el
+      
+  class WHIB.TimelineBoxView extends Backbone.View
+    template: _.template jQuery('#timeline-box-template').html()
+    initialize: -> @render()
+    render: ->
+      @$el.html @template
+        description: @model.get 'description'
+        time: moment(@model.get 'time').format DATE_FORMAT
+  
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
       @title = if options?.title? then options.title else ''
@@ -248,6 +270,6 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
     render: -> @$el.modal()
     events:
       'click .yes': => @trigger 'yes'
-
+  
   WHIB
   
