@@ -254,15 +254,14 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
   class WHIB.TimelineBoxView extends Backbone.View
     template: _.template jQuery('#timeline-box-template').html()
     initialize: ->
-      @render()
+      if not @model.isNew() then @render()
       #No need to listen time change as It 
       @listenTo @model, 'change:position change:lat change:lng', @render
       @listenTo @model, 'destroy', @remove
     render: ->
-      if not @model.isNew()
-        @$el.html @template
-          description: @model.get 'description'
-          time: moment(@model.get 'time').format DATE_FORMAT
+      @$el.html @template
+        description: @model.get 'description'
+        time: moment(@model.get 'time').format DATE_FORMAT
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
