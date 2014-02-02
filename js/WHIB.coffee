@@ -24,7 +24,7 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
         collection: @places
   
   #Model for a single place
-  class WHIB.Place extends Backbone.Model    
+  class WHIB.Place extends Backbone.Model
     getLatLng: ->
       new google.maps.LatLng @get('lat'), @get 'lng'
     validate: (attrs) ->
@@ -238,22 +238,31 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
         else @trigger 'render', 'show'
   
   class WHIB.TimelineView extends Backbone.View
-    initialize: -> @render()
+    initialize: ->
+      @render()
+      @listenTo @collection, 'sort', @render
+      @listenTo @collection, 'add', @renderModel
     
-    render: ->
-      @collection.each (model) =>
-        view = new WHIB.TimelineBoxView
-          model: model
-        
-        @$el.append view.el
+    renderModel: (model) ->
+      view = new WHIB.TimelineBoxView
+        model: model
+      @$el.append view.el
+      view.listenTo @collection, 'sort', view.remove
+    
+    render: -> @collection.each @renderModel, @
       
   class WHIB.TimelineBoxView extends Backbone.View
     template: _.template jQuery('#timeline-box-template').html()
-    initialize: -> @render()
+    initialize: ->
+      @render()
+      #No need to listen time change as It 
+      @listenTo @model, 'change:position change:lat change:lng', @render
+      @listenTo @model, 'destroy', @remove
     render: ->
-      @$el.html @template
-        description: @model.get 'description'
-        time: moment(@model.get 'time').format DATE_FORMAT
+      if not @model.isNew()
+        @$el.html @template
+          description: @model.get 'description'
+          time: moment(@model.get 'time').format DATE_FORMAT
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
