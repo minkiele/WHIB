@@ -46,7 +46,7 @@ module.exports = function(grunt) {
     },
     requirejs: {
       prod: {
-        options: grunt.file.readJSON('r.js.json')
+        options: grunt.file.readJSON('build/r.json')
       }
     },
     watch: {
