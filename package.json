@@ -1,6 +1,6 @@
 {
   "name": "WHIB",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Where Have I Been",
   "main": "web.js",
   "scripts": {
