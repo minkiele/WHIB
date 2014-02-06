@@ -2,12 +2,11 @@ define (require, exports, module) ->
   URI = require 'URI'
   class StaticMap
     BASE_URL = 'http://maps.googleapis.com/maps/api/staticmap'
-    constructor: (@sensor = no) ->
-      @GMAPS_KEY = module.config().key
+    constructor: (@sensor = no, @key = module.config().key) ->
       @uri = URI(BASE_URL).addSearch
         sensor: if @sensor then "true" else "false"
       .addSearch
-        key: @GMAPS_KEY
+        key: @key
       @markers = []
       @params = {}
     setSize: (@width, @height = null) ->
