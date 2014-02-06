@@ -29,4 +29,5 @@ define (require, exports, module) ->
       @uri.addSearch key, value
     getUrl: () ->
       @uri.toString()
-  exportsStaticMap
+
+  return StaticMap
