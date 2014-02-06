@@ -1,4 +1,4 @@
-define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store) ->
+define ['jquery', 'backbone', 'moment', 'store', './WHIB-URL', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store, WHIB_URL) ->
   DEFAULT_ZOOM = 1
   DEFAULT_POSITION = new google.maps.LatLng(0, 0)
   DEFAULT_SYNC_TIME = 500
@@ -252,16 +252,28 @@ define ['jquery', 'backbone', 'moment', 'store', 'localstorage', 'async', 'gmaps
     render: -> @collection.each @renderModel, @
       
   class WHIB.TimelineBoxView extends Backbone.View
-    template: _.template jQuery('#timeline-box-template').html()
     initialize: ->
+      tpl = jQuery '#timeline-box-template'
+      @template = _.template tpl.html()
+      @imgWidth = tpl.data 'img-width'
+      @imgHeight = tpl.data 'img-height'
+      @imgZoom = tpl.data 'img-zoom'
+
       if not @model.isNew() then @render()
       #No need to listen time change as It 
       @listenTo @model, 'change:position change:lat change:lng', @render
       @listenTo @model, 'destroy', @remove
     render: ->
+      img = new WHIB_URL()
+      img.setCenter @model.getLatLng()
+      img.setSize @imgWidth, @imgHeight
+      img.addMarker
+        positions: [@model.getLatLng()]
+      img.set 'zoom', @imgZoom
       @$el.html @template
         description: @model.get 'description'
         time: moment(@model.get 'time').format DATE_FORMAT
+        imgsrc: img.getUrl()
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
