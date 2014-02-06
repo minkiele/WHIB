@@ -1,4 +1,4 @@
-define ['jquery', 'backbone', 'moment', 'store', './WHIB-URL', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store, WHIB_URL) ->
+define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store, StaticMap) ->
   DEFAULT_ZOOM = 1
   DEFAULT_POSITION = new google.maps.LatLng(0, 0)
   DEFAULT_SYNC_TIME = 500
@@ -264,7 +264,7 @@ define ['jquery', 'backbone', 'moment', 'store', './WHIB-URL', 'localstorage', '
       @listenTo @model, 'change:position change:lat change:lng', @render
       @listenTo @model, 'destroy', @remove
     render: ->
-      img = new WHIB_URL()
+      img = new StaticMap()
       img.setCenter @model.getLatLng()
       img.setSize @imgWidth, @imgHeight
       img.addMarker

@@ -1,5 +1,6 @@
-define ['module', 'URI'], (module, URI) ->
-  class WHIB_URL
+define (require, exports, module) ->
+  URI = require 'URI'
+  class StaticMap
     BASE_URL = 'http://maps.googleapis.com/maps/api/staticmap'
     constructor: (@sensor = no) ->
       @GMAPS_KEY = module.config().key
@@ -29,6 +30,4 @@ define ['module', 'URI'], (module, URI) ->
       @uri.addSearch key, value
     getUrl: () ->
       @uri.toString()
-      
-      
-  WHIB_URL
+  exportsStaticMap
