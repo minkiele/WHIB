@@ -1,9 +1,11 @@
-define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store, StaticMap) ->
+define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store, StaticMap, Modernizr) ->
   DEFAULT_ZOOM = 1
   DEFAULT_POSITION = new google.maps.LatLng(0, 0)
   DEFAULT_SYNC_TIME = 500
   DEFAULT_DBLCLICK_HACK_TIMEOUT = 400
-  DATE_FORMAT = 'DD/MM/YYYY'
+  
+  DATE_FORMAT_SHOW = 'DD/MM/YYYY'
+  DATE_FORMAT = unless Modernizr.inputtypes.date then DATE_FORMAT_SHOW else 'YYYY-MM-DD'
   
   #Main controller
   class WHIB
@@ -175,8 +177,6 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'localstorage', 
   
       @marker.addListener 'dblclick', ->
         clearTimeout dblclickHackTimerId
-      
-      @listenTo @model, 'change', @render
   
       @listenTo @model, 'destroy', =>
         @marker.setVisible no
@@ -206,7 +206,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'localstorage', 
           @marker.setAnimation()
           @$el.html @showModeTemplate
             description: @model.get 'description'
-            time: moment(@model.get 'time').format DATE_FORMAT
+            time: moment(@model.get 'time').format DATE_FORMAT_SHOW
         when 'create'
           @marker.setAnimation google.maps.Animation.BOUNCE
           @$el.html @createModeTemplate

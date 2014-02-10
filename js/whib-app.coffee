@@ -18,6 +18,7 @@ require.config
     moment: 'bower_components/momentjs/min/moment.min'
     store: 'bower_components/store.js/store.min'
     URI: 'bower_components/URIjs/src/URI'
+    modernizr: 'js/modernizr.custom'
   map:
     URI:
       punycode: 'bower_components/URIjs/src/punycode'
@@ -30,6 +31,8 @@ require.config
     underscore:
       exports: '_'
     bootstrap: ['jquery']
+    modernizr:
+      exports: 'Modernizr'
 
 require ['js/WHIB'], (WHIB) ->
   #The I choose a position automatically
