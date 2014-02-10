@@ -191,6 +191,9 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'localstorage', 
         if address? then @placeholder = "#{address}?"
       .always => @trigger 'render', 'create'
 
+      @listenTo @model, 'show-on-map', =>
+        google.maps.event.trigger @marker, 'click'
+      
     info: new google.maps.InfoWindow()
   
     createModeTemplate: _.template jQuery('#create-mode-template').html()
@@ -274,6 +277,9 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'localstorage', 
         description: @model.get 'description'
         time: moment(@model.get 'time').format DATE_FORMAT
         imgsrc: img.getUrl()
+      
+    events:
+      'click .timeline-marker': -> @model.trigger 'show-on-map'
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
