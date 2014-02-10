@@ -263,8 +263,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       @imgZoom = tpl.data 'img-zoom'
 
       if not @model.isNew() then @render()
-      #No need to listen time change as It 
-      @listenTo @model, 'change:position change:lat change:lng', @render
+      @listenTo @model, 'change', @render
       @listenTo @model, 'destroy', @remove
     render: ->
       img = new StaticMap()
