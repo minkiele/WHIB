@@ -274,7 +274,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       img.set 'zoom', @imgZoom
       @$el.html @template
         description: @model.get 'description'
-        time: moment(@model.get 'time').format DATE_FORMAT
+        time: moment(@model.get 'time').format DATE_FORMAT_SHOW
         imgsrc: img.getUrl()
       
     events:
