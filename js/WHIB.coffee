@@ -252,7 +252,10 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       @$el.append view.el
       view.listenTo @collection, 'sort', view.remove
     
-    render: -> @collection.each @renderModel, @
+    render: ->
+      doShow = @collection.length > 0
+      @$el.parent().toggle doShow
+      if doShow then @collection.each @renderModel, @
       
   class WHIB.TimelineBoxView extends Backbone.View
     initialize: ->
