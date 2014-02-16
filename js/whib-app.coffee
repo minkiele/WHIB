@@ -19,6 +19,7 @@ require.config
     store: 'bower_components/store.js/store.min'
     URI: 'bower_components/URIjs/src/URI'
     modernizr: 'js/modernizr.custom'
+    jqueryuiselectable: 'bower_components/jquery-ui/ui/minified/jquery.ui.selectable.min'
   map:
     URI:
       punycode: 'bower_components/URIjs/src/punycode'
@@ -33,6 +34,7 @@ require.config
     bootstrap: ['jquery']
     modernizr:
       exports: 'Modernizr'
+    jqueryuiselectable: ['jquery', 'bower_components/jquery-ui/ui/minified/jquery.ui.core.min', 'bower_components/jquery-ui/ui/minified/jquery.ui.widget.min', 'bower_components/jquery-ui/ui/minified/jquery.ui.mouse.min']
 
 require ['js/WHIB'], (WHIB) ->
   #The I choose a position automatically

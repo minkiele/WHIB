@@ -1,4 +1,4 @@
-define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'localstorage', 'async', 'gmaps'], (jQuery, Backbone, moment, store, StaticMap, Modernizr) ->
+define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'localstorage', 'async', 'gmaps', 'jqueryuiselectable'], (jQuery, Backbone, moment, store, StaticMap, Modernizr) ->
   DEFAULT_ZOOM = 1
   DEFAULT_POSITION = new google.maps.LatLng(0, 0)
   DEFAULT_SYNC_TIME = 500
