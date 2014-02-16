@@ -27,6 +27,9 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
   
   #Model for a single place
   class WHIB.Place extends Backbone.Model
+    initialize: ->
+      @collection.listenTo @, 'change:time', @collection.sort
+      #@on 'change:time', @collection.sort, @collection
     getLatLng: ->
       new google.maps.LatLng @get('lat'), @get 'lng'
     validate: (attrs) ->
@@ -40,8 +43,8 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
     model: WHIB.Place
     localStorage: new Backbone.LocalStorage 'WHIB'
     comparator: (aPlace, bPlace) ->
-      aMoment = moment aPlace.time
-      bMoment = moment bPlace.time
+      aMoment = moment aPlace.get 'time'
+      bMoment = moment bPlace.get 'time'
       if aMoment.isBefore(bMoment) then -1 else if aMoment.isSame(bMoment) then 0 else 1
     getLatLngBounds: ->
       bounds = new google.maps.LatLngBounds()
