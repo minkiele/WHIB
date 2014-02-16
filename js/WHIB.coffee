@@ -248,6 +248,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       @render()
       @listenTo @collection, 'sort', @render
       @listenTo @collection, 'add', @renderModel
+      @$el.selectable()
     
     renderModel: (model) ->
       view = new WHIB.TimelineBoxView
