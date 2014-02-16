@@ -11,7 +11,8 @@
     "store": "bower_components/store.js/store.min",
     "URI": "bower_components/URIjs/src/URI",
     "gmaps": "http://localhost/gmaps",
-    "modernizr": "js/modernizr.custom"
+    "modernizr": "js/modernizr.custom",
+    "jqueryuiselectable": "bower_components/jquery-ui/ui/minified/jquery.ui.selectable.min"
   },
   "map": {
     "URI": {
