@@ -52,6 +52,18 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
         bounds.extend model.getLatLng()
       bounds
 
+  #TRIPS
+  class WHIB.Trip extends Backbone.Model
+    initialize: ->
+      @places = new WHIB.Places()
+      @set 'places', @places
+
+  class WHIB.Trips extends Backbone.Collection
+    model: WHIB.Trip
+    localStorage: new Backbone.LocalStorage 'WHIB.Trips'
+    comparator: WHIB.Places::comparator
+  
+  
   #Class with static methods (like reverse geocoder)
   class WHIB.Services
     #Wrapper for jQuery.Deferred to resolve reverse geocoding
@@ -248,7 +260,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       @render()
       @listenTo @collection, 'sort', @render
       @listenTo @collection, 'add', @renderModel
-      @$el.selectable()
+      #@$el.selectable()
     
     renderModel: (model) ->
       view = new WHIB.TimelineBoxView
