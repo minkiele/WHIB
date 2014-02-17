@@ -3,6 +3,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
   DEFAULT_POSITION = new google.maps.LatLng(0, 0)
   DEFAULT_SYNC_TIME = 500
   DEFAULT_DBLCLICK_HACK_TIMEOUT = 400
+  DELAY_BETWEEN_MARKERS = 200
   
   DATE_FORMAT_SHOW = 'DD/MM/YYYY'
   DATE_FORMAT = unless Modernizr.inputtypes.date then DATE_FORMAT_SHOW else 'YYYY-MM-DD'
@@ -132,8 +133,12 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
         clearTimeout dblclickHackTimerId
   
     populateMap: ->
+      delay = 0
       @collection.each (place) =>
-        @createViewFor place
+        setTimeout => @createViewFor(place)
+        ,
+        delay
+        delay += DELAY_BETWEEN_MARKERS
       @collection.on 'add', (place) =>
         @createViewFor place
       undefined
