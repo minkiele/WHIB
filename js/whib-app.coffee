@@ -9,7 +9,7 @@ require.config
   waitSeconds: 15
   baseUrl: '..'
   paths:
-    jquery: 'bower_components/jquery/jquery.min'
+    jquery: 'bower_components/jquery/dist/jquery.min'
     bootstrap: 'bower_components/bootstrap/dist/js/bootstrap.min'
     underscore: 'bower_components/underscore/underscore-min'
     backbone: 'bower_components/backbone/backbone'
