@@ -14,6 +14,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
     constructor: (position, zoom = DEFAULT_ZOOM) ->
       @node = jQuery('#gmap').get 0
       @timeline = jQuery('#timeline').get 0
+      @search =  jQuery('#search-form').get 0
       @places = new WHIB.Places()
       @places.fetch
         reset: true
@@ -25,6 +26,11 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       @timelineView = new WHIB.TimelineView
         el: @timeline
         collection: @places
+      @searchView = new WHIB.SearchView
+        el: @search
+
+      @searchView.on 'foundAddress', (address) =>
+        @mapView.map.setCenter address
   
   #Model for a single place
   class WHIB.Place extends Backbone.Model
@@ -93,7 +99,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       if (not options?.position?)
         position = if @collection.size() > 0 then @collection.getLatLngBounds().getCenter() else DEFAULT_POSITION
       else position = options.position
-      def = new jQuery.Deferred()
+      @def = def = new jQuery.Deferred()
       if @map?
         def.resolveWith @
       else
@@ -112,7 +118,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
           google.maps.event.addListenerOnce @map, 'idle', =>
             def.resolveWith @
   
-      def.done @addMapListener
+      def.done @addMapListeners
       def.done @populateMap
       def.done @fitBounds
       def.done @addPersistence
@@ -158,7 +164,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
         model: place
         collection: @collection
         map: @map
-  
+
   #View to interact with the single markers and the infowindows for the place
   class WHIB.PlaceView extends Backbone.View
     
@@ -290,6 +296,16 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       
     events:
       'click .timeline-marker': -> @model.trigger 'show-on-map'
+  
+  class WHIB.SearchView extends Backbone.View
+    initialize: ->
+      @input = @.$ 'input[type="search"]'
+    events:
+      'submit': (evt) ->
+        evt.preventDefault()
+        address = @input.val()
+        if address.length > 0 then WHIB.Services.Geocode(address).done (center) =>
+          @trigger 'foundAddress', center
   
   class WHIB.ModalView extends Backbone.View
     initialize: (options) ->
