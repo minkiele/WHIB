@@ -4,6 +4,7 @@
 <title>WHIB: Where Have I Been?</title>
 <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 <link type="text/css" rel="stylesheet" href="css/WHIB.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <header class="container">
@@ -12,23 +13,39 @@
         <p class="caption"><i>Where Have I Been?</i>: something made for fun.</p>
       </div>
     </header>
-    <div class="container">
-	    <div id="gmap"></div>
-	    <hr>
-	    <div id="import-export">
-            <h2>Export all the places</h2>
-            <div class="row">
-                <div class="col-sm-10">
-                    <textarea class="form-control" id="loading-bay" cols="80" rows="15"></textarea>
-                </div>
-                <div class="col-sm-2">
-                    <button type="button" class="btn btn-primary btn-block" id="do-export"><span class="glyphicon glyphicon-share-alt"></span> Export</button>
-                    <button type="button" class="btn btn-danger btn-block" id="do-import"><span class="glyphicon glyphicon-import"></span> Import</button>
-                </div>
+    <div id="map-container" class="container">
+        <h2 id="the-map">The Map</h2>
+        <div id="gmap"></div>
+        <h3>Search</h3>
+        <form class="form-inline" role="search" id="search-form">
+          <div class="form-group">
+            <label class="sr-only" for="search-address">Search an address</label>
+            <input type="search" class="form-control" id="search-address" placeholder="Search an address">
+          </div>
+          <button type="submit" class="btn btn-primary">Search <span class="glyphicon glyphicon-search"></span></button>
+        </form>
+        <hr>
+    </div>
+    <div id="timeline-container" class="container">
+        <h2 id="the-timeline">The Timeline</h2>
+        <div id="timeline"></div>
+        <hr>
+    </div>
+    <div id="import-export" class="container">
+        <h2>Export all the places</h2>
+        <div class="row">
+            <div class="col-sm-10">
+                <textarea class="form-control" id="loading-bay" cols="80" rows="15"></textarea>
             </div>
-	    </div>
-	    <hr>
-	    <footer>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-primary btn-block" id="do-export"><span class="glyphicon glyphicon-share-alt"></span> Export</button>
+                <button type="button" class="btn btn-danger btn-block" id="do-import"><span class="glyphicon glyphicon-import"></span> Import</button>
+            </div>
+        </div>
+    </div>
+    <div id="why-container" class="container">
+        <h2 id="the-why">The Why?</h2>
+        <footer>
             <p>I wanted to learn something new so one saturday morning I sat at my desk and thought of this simple application. It took me a while but at last I could make it.</p>
             <p>Frontend written in Coffeescript and LessCSS, it uses jQuery for everything, Bootstrap for coolness, Backbone for MVC, Backbone.Localstorage for persistence, RequireJS for modules and plugins loading, Google Maps API V3 guess for what and momentjs for dates handling.</p>
             <p>Backend runs over Heroku, NodeJS, Grunt for the build tasks, Bower for the assets, ExpressJS for the webserver, Hogan.js for the mustaches and Consolidate for serving the compiled HTML templates.</p>
@@ -38,42 +55,58 @@
 <script type="text/template" id="edit-mode-template">
     <div class="edit">
         <div class="form-group"><label for="description">Where?</label><input class="description form-control" type="text" name="description" value="<%= description %>" placeholder="What did you do there?"></div>
-        <div class="form-group"><label for="time">When?</label><input class="time form-control" type="text" name="time" value="<%=time%>" placeholder="When did you get there?"></div>
+        <div class="form-group"><label for="time">When?</label><input class="time form-control" type="date" name="time" value="<%=time%>" placeholder="When did you get there?"></div>
         <div class="form-group clearfix"><div class="pull-left"><button class="save btn btn-success btn-xs" type="button">Save</button> <button class="undo btn btn-warning btn-xs" type="button">Undo</button></div> <button class="delete btn btn-danger btn-xs pull-right" type="button">Delete</button></div>
     </div>
 </script>
 <script type="text/template" id="create-mode-template">
     <div class="create">
         <div class="form-group"><label for="description">Where?</label><input class="description form-control" type="text" name="description" value="<%= description %>" placeholder="<%= placeholder %>"></div>
-        <div class="form-group"><label for="time">When?</label><input class="time form-control" type="text" name="time" value="<%= time %>" placeholder="When did you get there?"></div>
+        <div class="form-group"><label for="time">When?</label><input class="time form-control" type="date" name="time" value="<%= time %>" placeholder="When did you get there?"></div>
         <div class="form-group clearfix"><button class="save btn btn-success btn-xs pull-left" type="button">Save</button> <button class="delete btn btn-warning btn-xs pull-right" type="button">Nevermind</button></div>
     </div>
 </script>
 <script type="text/template" id="show-mode-template">
-    <div class="show">
-        <p class="description"><%= description %></p>
-        <p class="time"><%= time %></p>
-    </div>
+  <div class="show">
+    <p class="description"><%= description %></p>
+    <p class="time"><%= time %></p>
+  </div>
 </script>
 <script type="text/template" id="modal-template">
 <div class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title"><%= title %></h4>
-            </div>
-            <div class="modal-body"><%= body %></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default no" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary yes" data-dismiss="modal">Yes</button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= title %></h4>
+      </div>
+      <div class="modal-body"><%= body %></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default no" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary yes" data-dismiss="modal">Yes</button>
+      </div>
     </div>
+  </div>
 </div>
 </script>
+<script type="text/template" id="timeline-box-template" data-img-width="768" data-img-height="462" data-img-zoom="11">
+  <div class="timeline-box col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        <div class="description pull-left"><%= description %></div>
+        <div class="pull-right">
+          <a href="#the-map" class="btn btn-standard btn-xs timeline-marker" title="See this moment on the map"><span class="glyphicon glyphicon-map-marker"></span></a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="time"><%= time %></div>
+        <div class="preview"><img src="<%= imgsrc %>" alt="<%= description %>" class="img-responsive img-rounded"></div>
+      </div>
+    </div>
+  </div>
+</script>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
-<script>var require = {map: {'js/WHIB': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}};</script>
+<script>var require = {map: {'js/WHIB': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}, config: {'js/StaticMap': {'key' : '{{GMAPS_KEY}}'}}};</script>
 <script data-main="js/whib-app" src="bower_components/requirejs/require.js"></script>
 </body>
 </html>
