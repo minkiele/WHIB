@@ -33,6 +33,6 @@
       "exports": "Modernizr"
     }
   },
-  "name": "js/whib-app",
-  "out": "js/whib-app.js"
+  "name": "js/main",
+  "out": "js/main.js"
 }

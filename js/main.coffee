@@ -1,6 +1,6 @@
 `
 /*!
- * The start for the frontend application using RequireJS
+ * Startup the frontend application using RequireJS
  * @author Michele Montagner
  */
 `
@@ -34,6 +34,5 @@ require.config
     modernizr:
       exports: 'Modernizr'
 
-require ['js/WHIB'], (WHIB) ->
-  #The I choose a position automatically
-  window.theWHIB = new WHIB()
+require ['js/chronicles'], (Chronicles) ->
+  new Chronicles()

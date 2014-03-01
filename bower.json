@@ -1,17 +1,16 @@
 {
-  "name": "WHIB",
-  "version": "0.1.0",
-  "homepage": "https://github.com/minkiele/WHIB",
+  "name": "Chronicles",
+  "version": "0.2.0",
+  "homepage": "https://github.com/minkiele/chronicles",
   "authors": [
     "Michele Montagner <michele.montagner@gmail.com>"
   ],
-  "description": "Where Have I Been",
+  "description": "Chronicles, an on-line diary",
   "main": "Gruntfile.js",
   "keywords": [
-    "where",
-    "have",
-    "been",
-    "whib"
+    "Chronicles",
+    "online",
+    "diary"
   ],
   "license": "MIT",
   "private": true,
