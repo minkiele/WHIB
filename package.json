@@ -4,7 +4,7 @@
   "description": "Chronicles, an on-line diary",
   "main": "web.js",
   "scripts": {
-    "postinstall": "./chronicles.sh install"
+    "postinstall": "./app.sh install"
   },
   "repository": {
     "type": "git",
