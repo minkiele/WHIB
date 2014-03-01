@@ -1,6 +1,6 @@
 `
 /*!
- * The start for the frontend application using RequireJS
+ * Startup the frontend application using RequireJS
  * @author Michele Montagner
  */
 `
@@ -36,6 +36,5 @@ require.config
       exports: 'Modernizr'
     jqueryuiselectable: ['jquery', 'bower_components/jquery-ui/ui/minified/jquery.ui.core.min', 'bower_components/jquery-ui/ui/minified/jquery.ui.widget.min', 'bower_components/jquery-ui/ui/minified/jquery.ui.mouse.min']
 
-require ['js/WHIB'], (WHIB) ->
-  #The I choose a position automatically
-  window.theWHIB = new WHIB()
+require ['js/chronicles'], (Chronicles) ->
+  new Chronicles()

@@ -35,6 +35,6 @@
     },
     "jqueryuiselectable": ["jquery", "bower_components/jquery-ui/ui/minified/jquery.ui.core.min", "bower_components/jquery-ui/ui/minified/jquery.ui.widget.min", "bower_components/jquery-ui/ui/minified/jquery.ui.mouse.min"]
   },
-  "name": "js/whib-app",
-  "out": "js/whib-app.js"
+  "name": "js/main",
+  "out": "js/main.js"
 }

@@ -1,21 +1,29 @@
 <!doctype html>
 <html>
 <head>
-<title>WHIB: Where Have I Been?</title>
+<title>Chronicles - An on-line diary</title>
 <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-<link type="text/css" rel="stylesheet" href="css/WHIB.css">
+<link type="text/css" rel="stylesheet" href="css/chronicles.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <header class="container">
       <div class="page-header">
-        <h1>WHIB</h1>
-        <p class="caption"><i>Where Have I Been?</i>: something made for fun.</p>
+        <h1>Chronicles</h1>
+        <p class="caption"><i>An on-line diary</i>: something made for fun.</p>
       </div>
     </header>
     <div id="map-container" class="container">
         <h2 id="the-map">The Map</h2>
         <div id="gmap"></div>
+        <h3>Search</h3>
+        <form class="form-inline" role="search" id="search-form">
+          <div class="form-group">
+            <label class="sr-only" for="search-address">Search an address</label>
+            <input type="search" class="form-control" id="search-address" placeholder="Search an address">
+          </div>
+          <button type="submit" class="btn btn-primary">Search <span class="glyphicon glyphicon-search"></span></button>
+        </form>
         <hr>
     </div>
     <div id="timeline-container" class="container">
@@ -29,6 +37,7 @@
             <p>I wanted to learn something new so one saturday morning I sat at my desk and thought of this simple application. It took me a while but at last I could make it.</p>
             <p>Frontend written in Coffeescript and LessCSS, it uses jQuery for everything, Bootstrap for coolness, Backbone for MVC, Backbone.Localstorage for persistence, RequireJS for modules and plugins loading, Google Maps API V3 guess for what and momentjs for dates handling.</p>
             <p>Backend runs over Heroku, NodeJS, Grunt for the build tasks, Bower for the assets, ExpressJS for the webserver, Hogan.js for the mustaches and Consolidate for serving the compiled HTML templates.</p>
+            <p>One day, not so long ago I found that another project, named WHIB existed (with also an app for iOS) so I changed the project's name</p>
             <p><b>2013, Michele Montagner</b></p>
         </footer>
     </div>
@@ -86,7 +95,7 @@
   </div>
 </script>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
-<script>var require = {map: {'js/WHIB': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}, config: {'js/StaticMap': {'key' : '{{GMAPS_KEY}}'}}};</script>
-<script data-main="js/whib-app" src="bower_components/requirejs/require.js"></script>
+<script>var require = {map: {'js/chronicles': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}, config: {'js/StaticMap': {'key' : '{{GMAPS_KEY}}'}}};</script>
+<script data-main="js/main" src="bower_components/requirejs/require.js"></script>
 </body>
 </html>

@@ -9,25 +9,31 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
   DATE_FORMAT = unless Modernizr.inputtypes.date then DATE_FORMAT_SHOW else 'YYYY-MM-DD'
   
   #Main controller
-  class WHIB
+  class Chronicles
   #Initialize the node and preload the places collection
     constructor: (position, zoom = DEFAULT_ZOOM) ->
       @node = jQuery('#gmap').get 0
       @timeline = jQuery('#timeline').get 0
-      @places = new WHIB.Places()
+      @search =  jQuery('#search-form').get 0
+      @places = new Chronicles.Places()
       @places.fetch
         reset: true
-      @mapView = new WHIB.MapView
+      @mapView = new Chronicles.MapView
         position: position
         zoom: zoom
         el: @node
         collection: @places
-      @timelineView = new WHIB.TimelineView
+      @timelineView = new Chronicles.TimelineView
         el: @timeline
         collection: @places
+      @searchView = new Chronicles.SearchView
+        el: @search
+
+      @searchView.on 'foundAddress', (address) =>
+        @mapView.map.setCenter address
   
   #Model for a single place
-  class WHIB.Place extends Backbone.Model
+  class Chronicles.Place extends Backbone.Model
     initialize: ->
       @collection.listenTo @, 'change:time', @collection.sort
       #@on 'change:time', @collection.sort, @collection
@@ -40,9 +46,9 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       if (not attrs.time?) then return 'Missing time'
   
   #Model for a collection of places
-  class WHIB.Places extends Backbone.Collection
-    model: WHIB.Place
-    localStorage: new Backbone.LocalStorage 'WHIB'
+  class Chronicles.Places extends Backbone.Collection
+    model: Chronicles.Place
+    localStorage: new Backbone.LocalStorage 'Chronicles'
     comparator: (aPlace, bPlace) ->
       aMoment = moment aPlace.get 'time'
       bMoment = moment bPlace.get 'time'
@@ -66,7 +72,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
   
   
   #Class with static methods (like reverse geocoder)
-  class WHIB.Services
+  class Chronicles.Services
     #Wrapper for jQuery.Deferred to resolve reverse geocoding
     @Geocoder = (request) ->
       jQuery.Deferred (def) ->
@@ -94,7 +100,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
         if entries?.length? then entries[0].geometry.location
         
   #View for interaction with collection (Interact also with the map)
-  class WHIB.MapView extends Backbone.View
+  class Chronicles.MapView extends Backbone.View
     
     if store.enabled then mapTypeId = store.get 'mapTypeId'
     if not mapTypeId? then mapTypeId = google.maps.MapTypeId.SATELLITE
@@ -105,7 +111,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       if (not options?.position?)
         position = if @collection.size() > 0 then @collection.getLatLngBounds().getCenter() else DEFAULT_POSITION
       else position = options.position
-      def = new jQuery.Deferred()
+      @def = def = new jQuery.Deferred()
       if @map?
         def.resolveWith @
       else
@@ -124,7 +130,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
           google.maps.event.addListenerOnce @map, 'idle', =>
             def.resolveWith @
   
-      def.done @addMapListener
+      def.done @addMapListeners
       def.done @populateMap
       def.done @fitBounds
       def.done @addPersistence
@@ -166,13 +172,13 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
           store.set 'mapTypeId', @mapTypeId
     
     createViewFor: (place) ->
-      new WHIB.PlaceView
+      new Chronicles.PlaceView
         model: place
         collection: @collection
         map: @map
-  
+
   #View to interact with the single markers and the infowindows for the place
-  class WHIB.PlaceView extends Backbone.View
+  class Chronicles.PlaceView extends Backbone.View
     
     placeholder: 'What did you do here?'
     status: 'show'
@@ -207,7 +213,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
         @status = status
         @render()
 
-      if @model.isNew() then WHIB.Services.AddressFinder(@model.getLatLng()).done (address) =>
+      if @model.isNew() then Chronicles.Services.AddressFinder(@model.getLatLng()).done (address) =>
         if address? then @placeholder = "#{address}?"
       .always => @trigger 'render', 'create'
 
@@ -260,7 +266,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
             success: => @trigger 'render', 'show'
         else @trigger 'render', 'show'
   
-  class WHIB.TimelineView extends Backbone.View
+  class Chronicles.TimelineView extends Backbone.View
     initialize: ->
       @render()
       @listenTo @collection, 'sort', @render
@@ -268,7 +274,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       #@$el.selectable()
     
     renderModel: (model) ->
-      view = new WHIB.TimelineBoxView
+      view = new Chronicles.TimelineBoxView
         model: model
       @$el.append view.el
       view.listenTo @collection, 'sort', view.remove
@@ -278,7 +284,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       @$el.parent().toggle doShow
       if doShow then @collection.each @renderModel, @
       
-  class WHIB.TimelineBoxView extends Backbone.View
+  class Chronicles.TimelineBoxView extends Backbone.View
     initialize: ->
       tpl = jQuery '#timeline-box-template'
       @template = _.template tpl.html()
@@ -304,7 +310,17 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
     events:
       'click .timeline-marker': -> @model.trigger 'show-on-map'
   
-  class WHIB.ModalView extends Backbone.View
+  class Chronicles.SearchView extends Backbone.View
+    initialize: ->
+      @input = @.$ 'input[type="search"]'
+    events:
+      'submit': (evt) ->
+        evt.preventDefault()
+        address = @input.val()
+        if address.length > 0 then Chronicles.Services.Geocode(address).done (center) =>
+          @trigger 'foundAddress', center
+  
+  class Chronicles.ModalView extends Backbone.View
     initialize: (options) ->
       @title = if options?.title? then options.title else ''
       @body = if options?.body? then options.body else ''
@@ -320,5 +336,5 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
     events:
       'click .yes': => @trigger 'yes'
   
-  WHIB
+  Chronicles
   

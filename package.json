@@ -1,20 +1,19 @@
 {
-  "name": "WHIB",
-  "version": "0.1.0",
-  "description": "Where Have I Been",
+  "name": "Chronicles",
+  "version": "0.2.0",
+  "description": "Chronicles, an on-line diary",
   "main": "web.js",
   "scripts": {
-    "postinstall": "./WHIB.sh install"
+    "postinstall": "./app.sh install"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/minkiele/WHIB.git"
+    "url": "https://github.com/minkiele/chronicles.git"
   },
   "keywords": [
-    "where",
-    "have",
-    "been",
-    "whib"
+    "Chronicles",
+    "online",
+    "diary"
   ],
   "author": "Michele Montagner <michele.montagner@gmail.com>",
   "license": "BSD-2-Clause",
