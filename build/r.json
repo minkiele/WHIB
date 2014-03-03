@@ -1,7 +1,7 @@
 {
   "baseUrl": ".",
   "paths": {
-    "jquery": "bower_components/jquery/jquery.min",
+    "jquery": "bower_components/jquery/dist/jquery.min",
     "bootstrap": "bower_components/bootstrap/dist/js/bootstrap.min",
     "underscore": "bower_components/underscore/underscore-min",
     "backbone": "bower_components/backbone/backbone",
@@ -9,7 +9,16 @@
     "async": "bower_components/requirejs-plugins/src/async",
     "moment": "bower_components/momentjs/min/moment.min",
     "store": "bower_components/store.js/store.min",
-    "gmaps": "http://localhost/gmaps"
+    "URI": "bower_components/URIjs/src/URI",
+    "gmaps": "http://localhost/gmaps",
+    "modernizr": "js/modernizr.custom"
+  },
+  "map": {
+    "URI": {
+      "punycode": "bower_components/URIjs/src/punycode",
+      "IPv6": "bower_components/URIjs/src/IPv6",
+      "SecondLevelDomains": "bower_components/URIjs/src/SecondLevelDomains"
+    }
   },
   "shim": {
     "backbone": {
@@ -19,8 +28,11 @@
     "underscore": {
       "exports": "_"
     },
-    "bootstrap": ["jquery"]
+    "bootstrap": ["jquery"],
+    "modernizr":{
+      "exports": "Modernizr"
+    }
   },
-  "name": "js/whib-app",
-  "out": "js/whib-app.js"
+  "name": "js/main",
+  "out": "js/main.js"
 }
