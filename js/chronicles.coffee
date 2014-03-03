@@ -123,7 +123,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
       def.done @fitBounds
       def.done @addPersistence
     
-    addMapListener: ->
+    addMapListeners: ->
     
       dblclickHackTimerId = 0
   
@@ -248,6 +248,7 @@ define ['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'lo
         @model.destroy()
         @remove()
       'dblclick .show': -> @trigger 'render', 'edit'
+      'click .show .edit': -> @trigger 'render', 'edit'
       'click .undo': ->
         if not @model.isValid()
           @model.fetch
