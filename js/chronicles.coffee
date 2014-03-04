@@ -4,9 +4,9 @@
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'localstorage', 'async', 'gmaps'], factory);
+        define(['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'bootstrap', 'localstorage', 'async', 'gmaps'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('jquery'), require('backbone'), require('moment'), require('store'), require('./StaticMap'), require('modernizr'), require('localstorage'), require('async'), require('gmaps'));
+        module.exports = factory(require('jquery'), require('backbone'), require('moment'), require('store'), require('./StaticMap'), require('modernizr'), require('bootstrap'), require('localstorage'), require('async'), require('gmaps'));
     } else {
         root.returnExports = factory(root.jQuery, root.Backbone, root.moment, root.store, root.StaticMap, root.Modernizr);
     }
@@ -337,9 +337,8 @@ class Chronicles.ModalView extends Backbone.View
   template: _.template jQuery('#modal-template').html()
   render: -> @$el.modal()
   events:
-    'click .yes': => @trigger 'yes'
+    'click .yes': -> @trigger 'yes'
 
-    
 class Chronicles.ExportView extends Backbone.View
   initialize: ->
     @loadingBay = @$el.find '#loading-bay'
@@ -349,7 +348,11 @@ class Chronicles.ExportView extends Backbone.View
     @listenTo @modal, 'yes', =>
       try
         json = JSON.parse @loadingBay.val()
-        @collection.reset json
+        @collection.set json
+        @collection.each (model) -> model.save()
+      catch exc
+        console.log exc
+      console.log json
   el: '#import-export'
   events:
     'click #do-export': -> @loadingBay.val JSON.stringify @collection.toJSON()
