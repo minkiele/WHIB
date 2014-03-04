@@ -308,6 +308,7 @@ class Chronicles.TimelineBoxView extends Backbone.View
     @$el.html @template
       description: @model.get 'description'
       time: moment(@model.get 'time').format DATE_FORMAT_SHOW
+      style: if moment(@model.get 'time').isBefore() then 'default' else 'success'
       imgsrc: img.getUrl()
 
   events:
