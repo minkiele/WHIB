@@ -16,14 +16,38 @@
     <div id="map-container" class="container">
         <h2 id="the-map">The Map</h2>
         <div id="gmap"></div>
-        <h3>Search</h3>
-        <form class="form-inline" role="search" id="search-form">
-          <div class="form-group">
-            <label class="sr-only" for="search-address">Search an address</label>
-            <input type="search" class="form-control" id="search-address" placeholder="Search an address">
+        <div id="map-services">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#search-pane" data-toggle="tab">Search address</a></li>
+            <li><a href="#import-export-pane" data-toggle="tab">Import/Export</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="search-pane">
+              <h3>Search address</h3>
+              <form class="form-inline" role="search" id="search-form">
+                <div class="form-group">
+                  <label class="sr-only" for="search-address">Search address</label>
+                  <input type="search" class="form-control" id="search-address" placeholder="Search an address">
+                </div>
+                <button type="submit" class="btn btn-primary">Search <span class="glyphicon glyphicon-search"></span></button>
+              </form>
+            </div>
+            <div class="tab-pane" id="import-export-pane">
+              <div id="import-export">
+                <h3>Import/Export</h3>
+                <div class="row">
+                  <div class="col-sm-10">
+                    <textarea class="form-control" id="loading-bay" cols="80" rows="4"></textarea>
+                  </div>
+                  <div class="col-sm-2">
+                    <button type="button" class="btn btn-primary btn-block" id="do-export"><span class="glyphicon glyphicon-share-alt"></span> Export</button>
+                    <button type="button" class="btn btn-danger btn-block" id="do-import"><span class="glyphicon glyphicon-import"></span> Import</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">Search <span class="glyphicon glyphicon-search"></span></button>
-        </form>
+        </div>
         <hr>
     </div>
     <div id="timeline-container" class="container">
@@ -83,7 +107,7 @@
 </script>
 <script type="text/template" id="timeline-box-template" data-img-width="768" data-img-height="462" data-img-zoom="11">
   <div class="timeline-box col-xs-12 col-sm-6 col-md-4 col-lg-3">
-    <div class="panel panel-default">
+    <div class="panel panel-<%= style %>">
       <div class="panel-heading clearfix">
         <div class="description pull-left"><%= description %></div>
         <div class="pull-right">
