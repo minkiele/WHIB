@@ -19,6 +19,7 @@ require.config
     store: 'bower_components/store.js/store.min'
     URI: 'bower_components/URIjs/src/URI'
     modernizr: 'js/modernizr.custom'
+    facebook: '//connect.facebook.net/en_US/all'
   map:
     URI:
       punycode: 'bower_components/URIjs/src/punycode'
@@ -33,6 +34,8 @@ require.config
     bootstrap: ['jquery']
     modernizr:
       exports: 'Modernizr'
+    facebook:
+      exports: 'FB'
 
 require ['js/chronicles'], (Chronicles) ->
   new Chronicles()

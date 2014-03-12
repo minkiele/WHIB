@@ -11,7 +11,8 @@
     "store": "bower_components/store.js/store.min",
     "URI": "bower_components/URIjs/src/URI",
     "gmaps": "http://localhost/gmaps",
-    "modernizr": "js/modernizr.custom"
+    "modernizr": "js/modernizr.custom",
+    "facebook": "//connect.facebook.net/en_US/all"
   },
   "map": {
     "URI": {
@@ -31,6 +32,9 @@
     "bootstrap": ["jquery"],
     "modernizr":{
       "exports": "Modernizr"
+    },
+    "facebook": {
+      "exports": "FB"
     }
   },
   "name": "js/main",

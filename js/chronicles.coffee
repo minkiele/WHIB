@@ -4,13 +4,13 @@
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'bootstrap', 'localstorage', 'async', 'gmaps'], factory);
+        define(['jquery', 'backbone', 'moment', 'store', './StaticMap', 'modernizr', 'facebook', 'module', 'bootstrap', 'localstorage', 'async', 'gmaps'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('jquery'), require('backbone'), require('moment'), require('store'), require('./StaticMap'), require('modernizr'), require('bootstrap'), require('localstorage'), require('async'), require('gmaps'));
+        module.exports = factory(require('jquery'), require('backbone'), require('moment'), require('store'), require('./StaticMap'), require('modernizr'), require('facebook'), void(0), require('bootstrap'), require('localstorage'), require('async'), require('gmaps'));
     } else {
-        root.returnExports = factory(root.jQuery, root.Backbone, root.moment, root.store, root.StaticMap, root.Modernizr);
+        root.returnExports = factory(root.jQuery, root.Backbone, root.moment, root.store, root.StaticMap, root.Modernizr, root.FB);
     }
-}(this, function (jQuery, Backbone, moment, store, StaticMap, Modernizr) {
+}(this, function (jQuery, Backbone, moment, store, StaticMap, Modernizr, FB, module) {
 `
 DEFAULT_ZOOM = 1
 DEFAULT_POSITION = new google.maps.LatLng(0, 0)
@@ -20,6 +20,8 @@ DELAY_BETWEEN_MARKERS = 200
 
 DATE_FORMAT_SHOW = 'DD/MM/YYYY'
 DATE_FORMAT = unless Modernizr.inputtypes.date then DATE_FORMAT_SHOW else 'YYYY-MM-DD'
+
+FB_APP_ID = if module? and module.config? and (typeof module.config is 'function') and module.config().appId? then module.config().appId
 
 #Main controller
 class Chronicles
@@ -46,6 +48,9 @@ class Chronicles
 
     @searchView.on 'foundAddress', (address) =>
       @mapView.map.setCenter address
+
+    FB.init
+      appId: FB_APP_ID
 
 #Model for a single place
 class Chronicles.Place extends Backbone.Model

@@ -122,7 +122,7 @@
   </div>
 </script>
 <!-- BEST WAY I FOUND TO ADD GMAPS API KEY -->
-<script>var require = {map: {'js/chronicles': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}, config: {'js/StaticMap': {'key' : '{{GMAPS_KEY}}'}}};</script>
+<script>var require = {map: {'js/chronicles': {'gmaps' : 'async!https://maps.googleapis.com/maps/api/js?key={{GMAPS_KEY}}&sensor=false'}}, config: {'js/chronicles':{'appId': '{{FB_APP_ID}}'},'js/StaticMap': {'key' : '{{GMAPS_KEY}}'}}};</script>
 <script data-main="js/main" src="bower_components/requirejs/require.js"></script>
 </body>
 </html>

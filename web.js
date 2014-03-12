@@ -17,7 +17,8 @@ app.use('/js', express.static(__dirname + '/js'));
 app.use('/css', express.static(__dirname + '/css'));
 app.get('/', function(req,res){
 	res.render('index.html', {
-		GMAPS_KEY: process.env.GMAPS_KEY
+		GMAPS_KEY: process.env.GMAPS_KEY,
+		FB_APP_ID: process.env.FB_APP_ID
 	});
 });
 
@@ -25,6 +26,7 @@ app.get('/', function(req,res){
 var port = process.env.PORT || 5000;
 
 console.log(process.env.GMAPS_KEY);
+console.log(process.env.FB_APP_ID);
 
 //Silence, the audience is listening
 app.listen(port, function(){

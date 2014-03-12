@@ -9,6 +9,7 @@ do_login(){
 do_export(){
   do_login
   export GMAPS_KEY=$(heroku config:get GMAPS_KEY)
+  export FB_APP_ID=$(heroku config:get FB_APP_ID)
 }
 
 do_install(){
